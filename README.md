@@ -6,7 +6,7 @@
 ```sh
 gleam add lustre_pipes
 ```
-Let's you write views with pipes. It's definitely less performant but I have
+Lets you write views with pipes. It's definitely less performant but I have
 not benchmarked if significant or not.
 
 Example usage:
