@@ -4,9 +4,17 @@ import gleam/dynamic.{type Decoder}
 import gleam/int
 import gleam/list
 import gleam/string
-import lustre/internals/vdom.{Attribute, Event}
+import lustre/attribute
 
 import lustre_pipes/element.{type ElementScaffold}
+
+// TYPES -----------------------------------------------------------------------
+
+/// The `Attribute` type encompasses HTML attributes, DOM properties, and
+/// event listeners.
+///
+pub type Attribute(msg) =
+  attribute.Attribute(msg)
 
 // CONSTRUCTORS ----------------------------------------------------------------
 
@@ -22,10 +30,7 @@ pub fn attribute(
   name: String,
   value: String,
 ) -> ElementScaffold(msg) {
-  #(scaffold.0, [
-    Attribute(name, dynamic.from(value), as_property: False),
-    ..scaffold.1
-  ])
+  #(scaffold.0, [attribute.attribute(name, value), ..scaffold.1])
 }
 
 /// Create a DOM property. This is like saying `element.className = "wibble"` in
@@ -41,10 +46,7 @@ pub fn property(
   name: String,
   value: any,
 ) -> ElementScaffold(msg) {
-  #(scaffold.0, [
-    Attribute(name, dynamic.from(value), as_property: True),
-    ..scaffold.1
-  ])
+  #(scaffold.0, [attribute.property(name, value), ..scaffold.1])
 }
 
 ///
@@ -53,26 +55,12 @@ pub fn on(
   name: String,
   handler: Decoder(msg),
 ) -> ElementScaffold(msg) {
-  #(scaffold.0, [Event("on" <> name, handler), ..scaffold.1])
+  #(scaffold.0, [attribute.on(name, handler), ..scaffold.1])
 }
 
 pub fn none(scaffold: ElementScaffold(msg)) -> ElementScaffold(msg) {
   scaffold
 }
-
-// MANIPULATIONS ---------------------------------------------------------------
-
-/// The `Attribute` type is parameterised by the type of messages it can produce
-/// from events handlers. Sometimes you might end up with an attribute from a
-/// library or module that produces a different type of message: this function lets
-/// you map the messages produced from one type to another.
-///
-// pub fn map(scaffold: ElementScaffold(msg),attr: Attribute(a), f: fn(a) -> b) -> Attribute(b) {
-//   case attr {
-//     Attribute(name, value, as_property) -> Attribute(name, value, as_property)
-//     Event(on, handler) -> Event(on, fn(e) { result.map(handler(e), f) })
-//   }
-// }
 
 // COMMON ATTRIBUTES -----------------------------------------------------------
 
@@ -525,4 +513,24 @@ pub fn open(
 ) -> ElementScaffold(msg) {
   scaffold
   |> property("open", is_open)
+}
+
+// META ------------------------------------------------------------------------
+
+///
+pub fn charset(
+  scaffold: ElementScaffold(msg),
+  name: String,
+) -> ElementScaffold(msg) {
+  scaffold
+  |> attribute("charset", name)
+}
+
+///
+pub fn http_equiv(
+  scaffold: ElementScaffold(msg),
+  name: String,
+) -> ElementScaffold(msg) {
+  scaffold
+  |> attribute("http-equiv", name)
 }
