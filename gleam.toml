@@ -1,6 +1,6 @@
 name = "lustre_pipes"
 version = "0.1.0"
-gleam = ">= 1.4.0"
+gleam = ">= 1.6.0"
 
 description = "Write Lustre template using Gleam's pipes"
 
