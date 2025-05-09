@@ -1,5 +1,5 @@
 name = "lustre_pipes"
-version = "0.0.1"
+version = "0.1.0"
 gleam = ">= 1.4.0"
 
 description = "Write Lustre template using Gleam's pipes"
@@ -9,7 +9,7 @@ repository = { type = "github", user = "weedonandscott", repo = "lustre_pipes" }
 
 [dependencies]
 gleam_stdlib = ">= 0.34.0 and < 2.0.0"
-lustre = ">= 4.6.0 and < 5.0.0"
+lustre = ">= 5.0.0 and < 6.0.0"
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"
