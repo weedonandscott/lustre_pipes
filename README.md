@@ -50,10 +50,3 @@ fn view(model: Model) -> element.Element(Msg) {
 ```
 
 Further documentation can be found at <https://hexdocs.pm/lustre_pipes>.
-
-## Development
-
-```sh
-gleam run   # Run the project
-gleam test  # Run the tests
-```

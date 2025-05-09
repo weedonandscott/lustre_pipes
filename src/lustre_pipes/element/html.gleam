@@ -1,425 +1,422 @@
 // IMPORTS ---------------------------------------------------------------------
 
-import lustre/element
+import lustre/element/html
 
-import lustre_pipes/element.{
-  type ChildlessElementScaffold, type ElementScaffold,
-  type TextContentElementScaffold,
-} as _
+import lustre_pipes/element
 
 // HTML ELEMENTS: MAIN ROOT ----------------------------------------------------
 
 ///
-pub fn html() -> ElementScaffold(msg) {
+pub fn html() -> element.Scaffold(msg) {
   #("html", [])
 }
 
 pub fn text(content: String) {
-  element.text(content)
+  html.text(content)
 }
 
 // HTML ELEMENTS: DOCUMENT METADATA --------------------------------------------
 
 ///
-pub fn base() -> ChildlessElementScaffold(msg) {
+pub fn base() -> element.ChildlessScaffold(msg) {
   #("base", [])
 }
 
 ///
-pub fn head() -> ElementScaffold(msg) {
+pub fn head() -> element.Scaffold(msg) {
   #("head", [])
 }
 
 ///
-pub fn link() -> ChildlessElementScaffold(msg) {
+pub fn link() -> element.ChildlessScaffold(msg) {
   #("link", [])
 }
 
 ///
-pub fn meta() -> ChildlessElementScaffold(msg) {
+pub fn meta() -> element.ChildlessScaffold(msg) {
   #("meta", [])
 }
 
 ///
-pub fn style() -> TextContentElementScaffold(msg) {
+pub fn style() -> element.TextContentScaffold(msg) {
   #("style", [])
 }
 
 ///
-pub fn title() -> TextContentElementScaffold(msg) {
+pub fn title() -> element.TextContentScaffold(msg) {
   #("title", [])
 }
 
 // HTML ELEMENTS: SECTIONING ROOT -----------------------------------------------
 
 ///
-pub fn body() -> ElementScaffold(msg) {
+pub fn body() -> element.Scaffold(msg) {
   #("body", [])
 }
 
 // HTML ELEMENTS: CONTENT SECTIONING -------------------------------------------
 
 ///
-pub fn address() -> ElementScaffold(msg) {
+pub fn address() -> element.Scaffold(msg) {
   #("address", [])
 }
 
 ///
-pub fn article() -> ElementScaffold(msg) {
+pub fn article() -> element.Scaffold(msg) {
   #("article", [])
 }
 
 ///
-pub fn aside() -> ElementScaffold(msg) {
+pub fn aside() -> element.Scaffold(msg) {
   #("aside", [])
 }
 
 ///
-pub fn footer() -> ElementScaffold(msg) {
+pub fn footer() -> element.Scaffold(msg) {
   #("footer", [])
 }
 
 ///
-pub fn header() -> ElementScaffold(msg) {
+pub fn header() -> element.Scaffold(msg) {
   #("header", [])
 }
 
 ///
-pub fn h1() -> ElementScaffold(msg) {
+pub fn h1() -> element.Scaffold(msg) {
   #("h1", [])
 }
 
 ///
-pub fn h2() -> ElementScaffold(msg) {
+pub fn h2() -> element.Scaffold(msg) {
   #("h2", [])
 }
 
 ///
-pub fn h3() -> ElementScaffold(msg) {
+pub fn h3() -> element.Scaffold(msg) {
   #("h3", [])
 }
 
 ///
-pub fn h4() -> ElementScaffold(msg) {
+pub fn h4() -> element.Scaffold(msg) {
   #("h4", [])
 }
 
 ///
-pub fn h5() -> ElementScaffold(msg) {
+pub fn h5() -> element.Scaffold(msg) {
   #("h5", [])
 }
 
 ///
-pub fn h6() -> ElementScaffold(msg) {
+pub fn h6() -> element.Scaffold(msg) {
   #("h6", [])
 }
 
 ///
-pub fn hgroup() -> ElementScaffold(msg) {
+pub fn hgroup() -> element.Scaffold(msg) {
   #("hgroup", [])
 }
 
 ///
-pub fn main() -> ElementScaffold(msg) {
+pub fn main() -> element.Scaffold(msg) {
   #("main", [])
 }
 
 ///
-pub fn nav() -> ElementScaffold(msg) {
+pub fn nav() -> element.Scaffold(msg) {
   #("nav", [])
 }
 
 ///
-pub fn section() -> ElementScaffold(msg) {
+pub fn section() -> element.Scaffold(msg) {
   #("section", [])
 }
 
 ///
-pub fn search() -> ElementScaffold(msg) {
+pub fn search() -> element.Scaffold(msg) {
   #("search", [])
 }
 
 // HTML ELEMENTS: TEXT CONTENT -------------------------------------------------
 
 ///
-pub fn blockquote() -> ElementScaffold(msg) {
+pub fn blockquote() -> element.Scaffold(msg) {
   #("blockquote", [])
 }
 
 ///
-pub fn dd() -> ElementScaffold(msg) {
+pub fn dd() -> element.Scaffold(msg) {
   #("dd", [])
 }
 
 ///
-pub fn div() -> ElementScaffold(msg) {
+pub fn div() -> element.Scaffold(msg) {
   #("div", [])
 }
 
 ///
-pub fn dl() -> ElementScaffold(msg) {
+pub fn dl() -> element.Scaffold(msg) {
   #("dl", [])
 }
 
 ///
-pub fn dt() -> ElementScaffold(msg) {
+pub fn dt() -> element.Scaffold(msg) {
   #("dt", [])
 }
 
 ///
-pub fn figcaption() -> ElementScaffold(msg) {
+pub fn figcaption() -> element.Scaffold(msg) {
   #("figcaption", [])
 }
 
 ///
-pub fn figure() -> ElementScaffold(msg) {
+pub fn figure() -> element.Scaffold(msg) {
   #("figure", [])
 }
 
 ///
-pub fn hr() -> ChildlessElementScaffold(msg) {
+pub fn hr() -> element.ChildlessScaffold(msg) {
   #("hr", [])
 }
 
 ///
-pub fn li() -> ElementScaffold(msg) {
+pub fn li() -> element.Scaffold(msg) {
   #("li", [])
 }
 
 ///
-pub fn menu() -> ElementScaffold(msg) {
+pub fn menu() -> element.Scaffold(msg) {
   #("menu", [])
 }
 
 ///
-pub fn ol() -> ElementScaffold(msg) {
+pub fn ol() -> element.Scaffold(msg) {
   #("ol", [])
 }
 
 ///
-pub fn p() -> ElementScaffold(msg) {
+pub fn p() -> element.Scaffold(msg) {
   #("p", [])
 }
 
 ///
-pub fn pre() -> ElementScaffold(msg) {
+pub fn pre() -> element.Scaffold(msg) {
   #("pre", [])
 }
 
 ///
-pub fn ul() -> ElementScaffold(msg) {
+pub fn ul() -> element.Scaffold(msg) {
   #("ul", [])
 }
 
 // HTML ELEMENTS: INLINE TEXT SEMANTICS ----------------------------------------
 
 ///
-pub fn a() -> ElementScaffold(msg) {
+pub fn a() -> element.Scaffold(msg) {
   #("a", [])
 }
 
 ///
-pub fn abbr() -> ElementScaffold(msg) {
+pub fn abbr() -> element.Scaffold(msg) {
   #("abbr", [])
 }
 
 ///
-pub fn b() -> ElementScaffold(msg) {
+pub fn b() -> element.Scaffold(msg) {
   #("b", [])
 }
 
 ///
-pub fn bdi() -> ElementScaffold(msg) {
+pub fn bdi() -> element.Scaffold(msg) {
   #("bdi", [])
 }
 
 ///
-pub fn bdo() -> ElementScaffold(msg) {
+pub fn bdo() -> element.Scaffold(msg) {
   #("bdo", [])
 }
 
 ///
-pub fn br() -> ChildlessElementScaffold(msg) {
+pub fn br() -> element.ChildlessScaffold(msg) {
   #("br", [])
 }
 
 ///
-pub fn cite() -> ElementScaffold(msg) {
+pub fn cite() -> element.Scaffold(msg) {
   #("cite", [])
 }
 
 ///
-pub fn code() -> ElementScaffold(msg) {
+pub fn code() -> element.Scaffold(msg) {
   #("code", [])
 }
 
 ///
-pub fn data() -> ElementScaffold(msg) {
+pub fn data() -> element.Scaffold(msg) {
   #("data", [])
 }
 
 ///
-pub fn dfn() -> ElementScaffold(msg) {
+pub fn dfn() -> element.Scaffold(msg) {
   #("dfn", [])
 }
 
 ///
-pub fn em() -> ElementScaffold(msg) {
+pub fn em() -> element.Scaffold(msg) {
   #("em", [])
 }
 
 ///
-pub fn i() -> ElementScaffold(msg) {
+pub fn i() -> element.Scaffold(msg) {
   #("i", [])
 }
 
 ///
-pub fn kbd() -> ElementScaffold(msg) {
+pub fn kbd() -> element.Scaffold(msg) {
   #("kbd", [])
 }
 
 ///
-pub fn mark() -> ElementScaffold(msg) {
+pub fn mark() -> element.Scaffold(msg) {
   #("mark", [])
 }
 
 ///
-pub fn q() -> ElementScaffold(msg) {
+pub fn q() -> element.Scaffold(msg) {
   #("q", [])
 }
 
 ///
-pub fn rp() -> ElementScaffold(msg) {
+pub fn rp() -> element.Scaffold(msg) {
   #("rp", [])
 }
 
 ///
-pub fn rt() -> ElementScaffold(msg) {
+pub fn rt() -> element.Scaffold(msg) {
   #("rt", [])
 }
 
 ///
-pub fn ruby() -> ElementScaffold(msg) {
+pub fn ruby() -> element.Scaffold(msg) {
   #("ruby", [])
 }
 
 ///
-pub fn s() -> ElementScaffold(msg) {
+pub fn s() -> element.Scaffold(msg) {
   #("s", [])
 }
 
 ///
-pub fn samp() -> ElementScaffold(msg) {
+pub fn samp() -> element.Scaffold(msg) {
   #("samp", [])
 }
 
 ///
-pub fn small() -> ElementScaffold(msg) {
+pub fn small() -> element.Scaffold(msg) {
   #("small", [])
 }
 
 ///
-pub fn span() -> ElementScaffold(msg) {
+pub fn span() -> element.Scaffold(msg) {
   #("span", [])
 }
 
 ///
-pub fn strong() -> ElementScaffold(msg) {
+pub fn strong() -> element.Scaffold(msg) {
   #("strong", [])
 }
 
 ///
-pub fn sub() -> ElementScaffold(msg) {
+pub fn sub() -> element.Scaffold(msg) {
   #("sub", [])
 }
 
 ///
-pub fn sup() -> ElementScaffold(msg) {
+pub fn sup() -> element.Scaffold(msg) {
   #("sup", [])
 }
 
 ///
-pub fn time() -> ElementScaffold(msg) {
+pub fn time() -> element.Scaffold(msg) {
   #("time", [])
 }
 
 ///
-pub fn u() -> ElementScaffold(msg) {
+pub fn u() -> element.Scaffold(msg) {
   #("u", [])
 }
 
 ///
-pub fn var() -> ElementScaffold(msg) {
+pub fn var() -> element.Scaffold(msg) {
   #("var", [])
 }
 
 ///
-pub fn wbr() -> ChildlessElementScaffold(msg) {
+pub fn wbr() -> element.ChildlessScaffold(msg) {
   #("wbr", [])
 }
 
 // HTML ELEMENTS: IMAGE AND MULTIMEDIA -----------------------------------------
 
 ///
-pub fn area() -> ChildlessElementScaffold(msg) {
+pub fn area() -> element.ChildlessScaffold(msg) {
   #("area", [])
 }
 
 ///
-pub fn audio() -> ElementScaffold(msg) {
+pub fn audio() -> element.Scaffold(msg) {
   #("audio", [])
 }
 
 ///
-pub fn img() -> ChildlessElementScaffold(msg) {
+pub fn img() -> element.ChildlessScaffold(msg) {
   #("img", [])
 }
 
 /// Used with <area> elements to define an image map (a clickable link area).
 ///
-pub fn map() -> ElementScaffold(msg) {
+pub fn map() -> element.Scaffold(msg) {
   #("map", [])
 }
 
 ///
-pub fn track() -> ChildlessElementScaffold(msg) {
+pub fn track() -> element.ChildlessScaffold(msg) {
   #("track", [])
 }
 
 ///
-pub fn video() -> ElementScaffold(msg) {
+pub fn video() -> element.Scaffold(msg) {
   #("video", [])
 }
 
 // HTML ELEMENTS: EMBEDDED CONTENT ---------------------------------------------
 
 ///
-pub fn embed() -> ChildlessElementScaffold(msg) {
+pub fn embed() -> element.ChildlessScaffold(msg) {
   #("embed", [])
 }
 
 ///
-pub fn iframe() -> ChildlessElementScaffold(msg) {
+pub fn iframe() -> element.ChildlessScaffold(msg) {
   #("iframe", [])
 }
 
 ///
-pub fn object() -> ChildlessElementScaffold(msg) {
+pub fn object() -> element.ChildlessScaffold(msg) {
   #("object", [])
 }
 
 ///
-pub fn picture() -> ElementScaffold(msg) {
+pub fn picture() -> element.Scaffold(msg) {
   #("picture", [])
 }
 
 ///
-pub fn portal() -> ChildlessElementScaffold(msg) {
+pub fn portal() -> element.ChildlessScaffold(msg) {
   #("portal", [])
 }
 
 ///
-pub fn source() -> ChildlessElementScaffold(msg) {
+pub fn source() -> element.ChildlessScaffold(msg) {
   #("source", [])
 }
 
@@ -428,181 +425,181 @@ pub fn source() -> ChildlessElementScaffold(msg) {
 // HTML ELEMENTS: SCRIPTING ----------------------------------------------------
 
 ///
-pub fn canvas() -> ChildlessElementScaffold(msg) {
+pub fn canvas() -> element.ChildlessScaffold(msg) {
   #("canvas", [])
 }
 
 ///
-pub fn noscript() -> ElementScaffold(msg) {
+pub fn noscript() -> element.Scaffold(msg) {
   #("noscript", [])
 }
 
 ///
-pub fn script() -> TextContentElementScaffold(msg) {
+pub fn script() -> element.TextContentScaffold(msg) {
   #("script", [])
 }
 
 // HTML ELEMENTS: DEMARCATING EDITS ---------------------------------------------
 
 ///
-pub fn del() -> ElementScaffold(msg) {
+pub fn del() -> element.Scaffold(msg) {
   #("del", [])
 }
 
 ///
-pub fn ins() -> ElementScaffold(msg) {
+pub fn ins() -> element.Scaffold(msg) {
   #("ins", [])
 }
 
 // HTML ELEMENTS: TABLE CONTENT ------------------------------------------------
 
 ///
-pub fn caption() -> ElementScaffold(msg) {
+pub fn caption() -> element.Scaffold(msg) {
   #("caption", [])
 }
 
 ///
-pub fn col() -> ChildlessElementScaffold(msg) {
+pub fn col() -> element.ChildlessScaffold(msg) {
   #("col", [])
 }
 
 ///
-pub fn colgroup() -> ElementScaffold(msg) {
+pub fn colgroup() -> element.Scaffold(msg) {
   #("colgroup", [])
 }
 
 ///
-pub fn table() -> ElementScaffold(msg) {
+pub fn table() -> element.Scaffold(msg) {
   #("table", [])
 }
 
 ///
-pub fn tbody() -> ElementScaffold(msg) {
+pub fn tbody() -> element.Scaffold(msg) {
   #("tbody", [])
 }
 
 ///
-pub fn td() -> ElementScaffold(msg) {
+pub fn td() -> element.Scaffold(msg) {
   #("td", [])
 }
 
 ///
-pub fn tfoot() -> ElementScaffold(msg) {
+pub fn tfoot() -> element.Scaffold(msg) {
   #("tfoot", [])
 }
 
 ///
-pub fn th() -> ElementScaffold(msg) {
+pub fn th() -> element.Scaffold(msg) {
   #("th", [])
 }
 
 ///
-pub fn thead() -> ElementScaffold(msg) {
+pub fn thead() -> element.Scaffold(msg) {
   #("thead", [])
 }
 
 ///
-pub fn tr() -> ElementScaffold(msg) {
+pub fn tr() -> element.Scaffold(msg) {
   #("tr", [])
 }
 
 // HTML ELEMENTS: FORMS --------------------------------------------------------
 
 ///
-pub fn button() -> ElementScaffold(msg) {
+pub fn button() -> element.Scaffold(msg) {
   #("button", [])
 }
 
 ///
-pub fn datalist() -> ElementScaffold(msg) {
+pub fn datalist() -> element.Scaffold(msg) {
   #("datalist", [])
 }
 
 ///
-pub fn fieldset() -> ElementScaffold(msg) {
+pub fn fieldset() -> element.Scaffold(msg) {
   #("fieldset", [])
 }
 
 ///
-pub fn form() -> ElementScaffold(msg) {
+pub fn form() -> element.Scaffold(msg) {
   #("form", [])
 }
 
 ///
-pub fn input() -> ChildlessElementScaffold(msg) {
+pub fn input() -> element.ChildlessScaffold(msg) {
   #("input", [])
 }
 
 ///
-pub fn label() -> ElementScaffold(msg) {
+pub fn label() -> element.Scaffold(msg) {
   #("label", [])
 }
 
 ///
-pub fn legend() -> ElementScaffold(msg) {
+pub fn legend() -> element.Scaffold(msg) {
   #("legend", [])
 }
 
 ///
-pub fn meter() -> ElementScaffold(msg) {
+pub fn meter() -> element.Scaffold(msg) {
   #("meter", [])
 }
 
 ///
-pub fn optgroup() -> ElementScaffold(msg) {
+pub fn optgroup() -> element.Scaffold(msg) {
   #("optgroup", [])
 }
 
 ///
-pub fn option() -> TextContentElementScaffold(msg) {
+pub fn option() -> element.TextContentScaffold(msg) {
   #("option", [])
 }
 
 ///
-pub fn output() -> ElementScaffold(msg) {
+pub fn output() -> element.Scaffold(msg) {
   #("output", [])
 }
 
 ///
-pub fn progress() -> ElementScaffold(msg) {
+pub fn progress() -> element.Scaffold(msg) {
   #("progress", [])
 }
 
 ///
-pub fn select() -> ElementScaffold(msg) {
+pub fn select() -> element.Scaffold(msg) {
   #("select", [])
 }
 
 ///
-pub fn textarea() -> TextContentElementScaffold(msg) {
+pub fn textarea() -> element.TextContentScaffold(msg) {
   #("textarea", [])
 }
 
 // HTML ELEMENTS: INTERACTIVE ELEMENTS -----------------------------------------
 
 ///
-pub fn details() -> ElementScaffold(msg) {
+pub fn details() -> element.Scaffold(msg) {
   #("details", [])
 }
 
 ///
-pub fn dialog() -> ElementScaffold(msg) {
+pub fn dialog() -> element.Scaffold(msg) {
   #("dialog", [])
 }
 
 ///
-pub fn summary() -> ElementScaffold(msg) {
+pub fn summary() -> element.Scaffold(msg) {
   #("summary", [])
 }
 
 // HTML ELEMENTS: WEB COMPONENTS -----------------------------------------------
 
 ///
-pub fn slot() -> ChildlessElementScaffold(msg) {
+pub fn slot() -> element.ChildlessScaffold(msg) {
   #("slot", [])
 }
 
 ///
-pub fn template() -> ElementScaffold(msg) {
+pub fn template() -> element.Scaffold(msg) {
   #("template", [])
 }
