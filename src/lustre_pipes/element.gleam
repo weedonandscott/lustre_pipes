@@ -7,28 +7,50 @@ import lustre/element/keyed
 pub type Element(msg) =
   element.Element(msg)
 
-pub type Scaffold(msg) =
-  #(String, List(Attribute(msg)))
+@internal
+pub type ElementId {
+  Regular(String)
+  Namespaced(namespace: String, tag: String)
+}
 
+@internal
+pub type Scaffold(msg) =
+  #(ElementId, List(Attribute(msg)))
+
+@internal
 pub type ChildlessScaffold(msg) =
   Scaffold(msg)
 
+@internal
 pub type TextContentScaffold(msg) =
   Scaffold(msg)
 
 // CUSTOM FUNCTIONS ------------------------------------------------------------
 
 pub fn element(tag: String) -> Scaffold(msg) {
-  #(tag, [])
+  #(Regular(tag), [])
+}
+
+pub fn namespaced(namespace: String, tag: String) -> Scaffold(msg) {
+  #(Namespaced(namespace:, tag:), [])
 }
 
 pub fn empty(scaffold: Scaffold(msg)) -> Element(msg) {
-  element.element(scaffold.0, scaffold.1, [])
+  case scaffold.0 {
+    Namespaced(namespace:, tag:) ->
+      element.namespaced(namespace, tag, scaffold.1, [])
+    Regular(tag) -> element.element(tag, scaffold.1, [])
+  }
 }
 
 pub fn text_content(content: String) -> fn(Scaffold(msg)) -> Element(msg) {
+  let children = [element.text(content)]
   fn(scaffold: Scaffold(msg)) {
-    element.element(scaffold.0, scaffold.1, [element.text(content)])
+    case scaffold.0 {
+      Namespaced(namespace:, tag:) ->
+        element.namespaced(namespace, tag, scaffold.1, children)
+      Regular(tag) -> element.element(tag, scaffold.1, children)
+    }
   }
 }
 
@@ -36,22 +58,27 @@ pub fn children(
   children: List(Element(msg)),
 ) -> fn(Scaffold(msg)) -> Element(msg) {
   fn(scaffold: Scaffold(msg)) {
-    element.element(scaffold.0, scaffold.1, children)
+    case scaffold.0 {
+      Namespaced(namespace:, tag:) ->
+        element.namespaced(namespace, tag, scaffold.1, children)
+      Regular(tag) -> element.element(tag, scaffold.1, children)
+    }
   }
 }
 
 pub fn keyed(
   pairs: List(#(String, Element(msg))),
 ) -> fn(Scaffold(msg)) -> Element(msg) {
-  fn(scaffold: Scaffold(msg)) { keyed.element(scaffold.0, scaffold.1, pairs) }
+  fn(scaffold: Scaffold(msg)) {
+    case scaffold.0 {
+      Namespaced(namespace:, tag:) ->
+        keyed.namespaced(namespace, tag, scaffold.1, pairs)
+      Regular(tag) -> keyed.element(tag, scaffold.1, pairs)
+    }
+  }
 }
 
 // PARITY FUNCTIONS ------------------------------------------------------------
-
-/// A function for constructing elements in a specific XML namespace. This can
-/// be used to construct SVG or MathML elements, for example.
-///
-pub const namespaced = element.namespaced
 
 /// A function for constructing elements with more control over how the element
 /// is rendered when converted to a string. This is necessary because some HTML,

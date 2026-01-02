@@ -8,7 +8,7 @@ import lustre_pipes/element
 
 ///
 pub fn html() -> element.Scaffold(msg) {
-  #("html", [])
+  #(element.Regular("html"), [])
 }
 
 pub fn text(content: String) {
@@ -19,587 +19,603 @@ pub fn text(content: String) {
 
 ///
 pub fn base() -> element.ChildlessScaffold(msg) {
-  #("base", [])
+  #(element.Regular("base"), [])
 }
 
 ///
 pub fn head() -> element.Scaffold(msg) {
-  #("head", [])
+  #(element.Regular("head"), [])
 }
 
 ///
 pub fn link() -> element.ChildlessScaffold(msg) {
-  #("link", [])
+  #(element.Regular("link"), [])
 }
 
 ///
 pub fn meta() -> element.ChildlessScaffold(msg) {
-  #("meta", [])
+  #(element.Regular("meta"), [])
 }
 
 ///
 pub fn style() -> element.TextContentScaffold(msg) {
-  #("style", [])
+  #(element.Regular("style"), [])
 }
 
 ///
 pub fn title() -> element.TextContentScaffold(msg) {
-  #("title", [])
+  #(element.Regular("title"), [])
 }
 
 // HTML ELEMENTS: SECTIONING ROOT -----------------------------------------------
 
 ///
 pub fn body() -> element.Scaffold(msg) {
-  #("body", [])
+  #(element.Regular("body"), [])
 }
 
 // HTML ELEMENTS: CONTENT SECTIONING -------------------------------------------
 
 ///
 pub fn address() -> element.Scaffold(msg) {
-  #("address", [])
+  #(element.Regular("address"), [])
 }
 
 ///
 pub fn article() -> element.Scaffold(msg) {
-  #("article", [])
+  #(element.Regular("article"), [])
 }
 
 ///
 pub fn aside() -> element.Scaffold(msg) {
-  #("aside", [])
+  #(element.Regular("aside"), [])
 }
 
 ///
 pub fn footer() -> element.Scaffold(msg) {
-  #("footer", [])
+  #(element.Regular("footer"), [])
 }
 
 ///
 pub fn header() -> element.Scaffold(msg) {
-  #("header", [])
+  #(element.Regular("header"), [])
 }
 
 ///
 pub fn h1() -> element.Scaffold(msg) {
-  #("h1", [])
+  #(element.Regular("h1"), [])
 }
 
 ///
 pub fn h2() -> element.Scaffold(msg) {
-  #("h2", [])
+  #(element.Regular("h2"), [])
 }
 
 ///
 pub fn h3() -> element.Scaffold(msg) {
-  #("h3", [])
+  #(element.Regular("h3"), [])
 }
 
 ///
 pub fn h4() -> element.Scaffold(msg) {
-  #("h4", [])
+  #(element.Regular("h4"), [])
 }
 
 ///
 pub fn h5() -> element.Scaffold(msg) {
-  #("h5", [])
+  #(element.Regular("h5"), [])
 }
 
 ///
 pub fn h6() -> element.Scaffold(msg) {
-  #("h6", [])
+  #(element.Regular("h6"), [])
 }
 
 ///
 pub fn hgroup() -> element.Scaffold(msg) {
-  #("hgroup", [])
+  #(element.Regular("hgroup"), [])
 }
 
 ///
 pub fn main() -> element.Scaffold(msg) {
-  #("main", [])
+  #(element.Regular("main"), [])
 }
 
 ///
 pub fn nav() -> element.Scaffold(msg) {
-  #("nav", [])
+  #(element.Regular("nav"), [])
 }
 
 ///
 pub fn section() -> element.Scaffold(msg) {
-  #("section", [])
+  #(element.Regular("section"), [])
 }
 
 ///
 pub fn search() -> element.Scaffold(msg) {
-  #("search", [])
+  #(element.Regular("search"), [])
 }
 
 // HTML ELEMENTS: TEXT CONTENT -------------------------------------------------
 
 ///
 pub fn blockquote() -> element.Scaffold(msg) {
-  #("blockquote", [])
+  #(element.Regular("blockquote"), [])
 }
 
 ///
 pub fn dd() -> element.Scaffold(msg) {
-  #("dd", [])
+  #(element.Regular("dd"), [])
 }
 
 ///
 pub fn div() -> element.Scaffold(msg) {
-  #("div", [])
+  #(element.Regular("div"), [])
 }
 
 ///
 pub fn dl() -> element.Scaffold(msg) {
-  #("dl", [])
+  #(element.Regular("dl"), [])
 }
 
 ///
 pub fn dt() -> element.Scaffold(msg) {
-  #("dt", [])
+  #(element.Regular("dt"), [])
 }
 
 ///
 pub fn figcaption() -> element.Scaffold(msg) {
-  #("figcaption", [])
+  #(element.Regular("figcaption"), [])
 }
 
 ///
 pub fn figure() -> element.Scaffold(msg) {
-  #("figure", [])
+  #(element.Regular("figure"), [])
 }
 
 ///
 pub fn hr() -> element.ChildlessScaffold(msg) {
-  #("hr", [])
+  #(element.Regular("hr"), [])
 }
 
 ///
 pub fn li() -> element.Scaffold(msg) {
-  #("li", [])
+  #(element.Regular("li"), [])
 }
 
 ///
 pub fn menu() -> element.Scaffold(msg) {
-  #("menu", [])
+  #(element.Regular("menu"), [])
 }
 
 ///
 pub fn ol() -> element.Scaffold(msg) {
-  #("ol", [])
+  #(element.Regular("ol"), [])
 }
 
 ///
 pub fn p() -> element.Scaffold(msg) {
-  #("p", [])
+  #(element.Regular("p"), [])
 }
 
 ///
 pub fn pre() -> element.Scaffold(msg) {
-  #("pre", [])
+  #(element.Regular("pre"), [])
 }
 
 ///
 pub fn ul() -> element.Scaffold(msg) {
-  #("ul", [])
+  #(element.Regular("ul"), [])
 }
 
 // HTML ELEMENTS: INLINE TEXT SEMANTICS ----------------------------------------
 
 ///
 pub fn a() -> element.Scaffold(msg) {
-  #("a", [])
+  #(element.Regular("a"), [])
 }
 
 ///
 pub fn abbr() -> element.Scaffold(msg) {
-  #("abbr", [])
+  #(element.Regular("abbr"), [])
 }
 
 ///
 pub fn b() -> element.Scaffold(msg) {
-  #("b", [])
+  #(element.Regular("b"), [])
 }
 
 ///
 pub fn bdi() -> element.Scaffold(msg) {
-  #("bdi", [])
+  #(element.Regular("bdi"), [])
 }
 
 ///
 pub fn bdo() -> element.Scaffold(msg) {
-  #("bdo", [])
+  #(element.Regular("bdo"), [])
 }
 
 ///
 pub fn br() -> element.ChildlessScaffold(msg) {
-  #("br", [])
+  #(element.Regular("br"), [])
 }
 
 ///
 pub fn cite() -> element.Scaffold(msg) {
-  #("cite", [])
+  #(element.Regular("cite"), [])
 }
 
 ///
 pub fn code() -> element.Scaffold(msg) {
-  #("code", [])
+  #(element.Regular("code"), [])
 }
 
 ///
 pub fn data() -> element.Scaffold(msg) {
-  #("data", [])
+  #(element.Regular("data"), [])
 }
 
 ///
 pub fn dfn() -> element.Scaffold(msg) {
-  #("dfn", [])
+  #(element.Regular("dfn"), [])
 }
 
 ///
 pub fn em() -> element.Scaffold(msg) {
-  #("em", [])
+  #(element.Regular("em"), [])
 }
 
 ///
 pub fn i() -> element.Scaffold(msg) {
-  #("i", [])
+  #(element.Regular("i"), [])
 }
 
 ///
 pub fn kbd() -> element.Scaffold(msg) {
-  #("kbd", [])
+  #(element.Regular("kbd"), [])
 }
 
 ///
 pub fn mark() -> element.Scaffold(msg) {
-  #("mark", [])
+  #(element.Regular("mark"), [])
 }
 
 ///
 pub fn q() -> element.Scaffold(msg) {
-  #("q", [])
+  #(element.Regular("q"), [])
 }
 
 ///
 pub fn rp() -> element.Scaffold(msg) {
-  #("rp", [])
+  #(element.Regular("rp"), [])
 }
 
 ///
 pub fn rt() -> element.Scaffold(msg) {
-  #("rt", [])
+  #(element.Regular("rt"), [])
 }
 
 ///
 pub fn ruby() -> element.Scaffold(msg) {
-  #("ruby", [])
+  #(element.Regular("ruby"), [])
 }
 
 ///
 pub fn s() -> element.Scaffold(msg) {
-  #("s", [])
+  #(element.Regular("s"), [])
 }
 
 ///
 pub fn samp() -> element.Scaffold(msg) {
-  #("samp", [])
+  #(element.Regular("samp"), [])
 }
 
 ///
 pub fn small() -> element.Scaffold(msg) {
-  #("small", [])
+  #(element.Regular("small"), [])
 }
 
 ///
 pub fn span() -> element.Scaffold(msg) {
-  #("span", [])
+  #(element.Regular("span"), [])
 }
 
 ///
 pub fn strong() -> element.Scaffold(msg) {
-  #("strong", [])
+  #(element.Regular("strong"), [])
 }
 
 ///
 pub fn sub() -> element.Scaffold(msg) {
-  #("sub", [])
+  #(element.Regular("sub"), [])
 }
 
 ///
 pub fn sup() -> element.Scaffold(msg) {
-  #("sup", [])
+  #(element.Regular("sup"), [])
 }
 
 ///
 pub fn time() -> element.Scaffold(msg) {
-  #("time", [])
+  #(element.Regular("time"), [])
 }
 
 ///
 pub fn u() -> element.Scaffold(msg) {
-  #("u", [])
+  #(element.Regular("u"), [])
 }
 
 ///
 pub fn var() -> element.Scaffold(msg) {
-  #("var", [])
+  #(element.Regular("var"), [])
 }
 
 ///
 pub fn wbr() -> element.ChildlessScaffold(msg) {
-  #("wbr", [])
+  #(element.Regular("wbr"), [])
 }
 
 // HTML ELEMENTS: IMAGE AND MULTIMEDIA -----------------------------------------
 
 ///
 pub fn area() -> element.ChildlessScaffold(msg) {
-  #("area", [])
+  #(element.Regular("area"), [])
 }
 
 ///
 pub fn audio() -> element.Scaffold(msg) {
-  #("audio", [])
+  #(element.Regular("audio"), [])
 }
 
 ///
 pub fn img() -> element.ChildlessScaffold(msg) {
-  #("img", [])
+  #(element.Regular("img"), [])
 }
 
 /// Used with <area> elements to define an image map (a clickable link area).
 ///
 pub fn map() -> element.Scaffold(msg) {
-  #("map", [])
+  #(element.Regular("map"), [])
 }
 
 ///
 pub fn track() -> element.ChildlessScaffold(msg) {
-  #("track", [])
+  #(element.Regular("track"), [])
 }
 
 ///
 pub fn video() -> element.Scaffold(msg) {
-  #("video", [])
+  #(element.Regular("video"), [])
 }
 
 // HTML ELEMENTS: EMBEDDED CONTENT ---------------------------------------------
 
 ///
 pub fn embed() -> element.ChildlessScaffold(msg) {
-  #("embed", [])
+  #(element.Regular("embed"), [])
 }
 
 ///
 pub fn iframe() -> element.ChildlessScaffold(msg) {
-  #("iframe", [])
+  #(element.Regular("iframe"), [])
 }
 
 ///
 pub fn object() -> element.ChildlessScaffold(msg) {
-  #("object", [])
+  #(element.Regular("object"), [])
 }
 
 ///
 pub fn picture() -> element.Scaffold(msg) {
-  #("picture", [])
+  #(element.Regular("picture"), [])
 }
 
 ///
 pub fn portal() -> element.ChildlessScaffold(msg) {
-  #("portal", [])
+  #(element.Regular("portal"), [])
 }
 
 ///
 pub fn source() -> element.ChildlessScaffold(msg) {
-  #("source", [])
+  #(element.Regular("source"), [])
 }
 
 // HTML ELEMENTS: SVG AND MATHML -----------------------------------------------
+
+///
+pub fn math() -> element.Scaffold(msg) {
+  #(
+    element.Namespaced(
+      namespace: "http://www.w3.org/1998/Math/MathML",
+      tag: "math",
+    ),
+    [],
+  )
+}
+
+///
+pub fn svg() -> element.Scaffold(msg) {
+  #(element.Namespaced(namespace: "http://www.w3.org/2000/svg", tag: "svg"), [])
+}
 
 // HTML ELEMENTS: SCRIPTING ----------------------------------------------------
 
 ///
 pub fn canvas() -> element.ChildlessScaffold(msg) {
-  #("canvas", [])
+  #(element.Regular("canvas"), [])
 }
 
 ///
 pub fn noscript() -> element.Scaffold(msg) {
-  #("noscript", [])
+  #(element.Regular("noscript"), [])
 }
 
 ///
 pub fn script() -> element.TextContentScaffold(msg) {
-  #("script", [])
+  #(element.Regular("script"), [])
 }
 
 // HTML ELEMENTS: DEMARCATING EDITS ---------------------------------------------
 
 ///
 pub fn del() -> element.Scaffold(msg) {
-  #("del", [])
+  #(element.Regular("del"), [])
 }
 
 ///
 pub fn ins() -> element.Scaffold(msg) {
-  #("ins", [])
+  #(element.Regular("ins"), [])
 }
 
 // HTML ELEMENTS: TABLE CONTENT ------------------------------------------------
 
 ///
 pub fn caption() -> element.Scaffold(msg) {
-  #("caption", [])
+  #(element.Regular("caption"), [])
 }
 
 ///
 pub fn col() -> element.ChildlessScaffold(msg) {
-  #("col", [])
+  #(element.Regular("col"), [])
 }
 
 ///
 pub fn colgroup() -> element.Scaffold(msg) {
-  #("colgroup", [])
+  #(element.Regular("colgroup"), [])
 }
 
 ///
 pub fn table() -> element.Scaffold(msg) {
-  #("table", [])
+  #(element.Regular("table"), [])
 }
 
 ///
 pub fn tbody() -> element.Scaffold(msg) {
-  #("tbody", [])
+  #(element.Regular("tbody"), [])
 }
 
 ///
 pub fn td() -> element.Scaffold(msg) {
-  #("td", [])
+  #(element.Regular("td"), [])
 }
 
 ///
 pub fn tfoot() -> element.Scaffold(msg) {
-  #("tfoot", [])
+  #(element.Regular("tfoot"), [])
 }
 
 ///
 pub fn th() -> element.Scaffold(msg) {
-  #("th", [])
+  #(element.Regular("th"), [])
 }
 
 ///
 pub fn thead() -> element.Scaffold(msg) {
-  #("thead", [])
+  #(element.Regular("thead"), [])
 }
 
 ///
 pub fn tr() -> element.Scaffold(msg) {
-  #("tr", [])
+  #(element.Regular("tr"), [])
 }
 
 // HTML ELEMENTS: FORMS --------------------------------------------------------
 
 ///
 pub fn button() -> element.Scaffold(msg) {
-  #("button", [])
+  #(element.Regular("button"), [])
 }
 
 ///
 pub fn datalist() -> element.Scaffold(msg) {
-  #("datalist", [])
+  #(element.Regular("datalist"), [])
 }
 
 ///
 pub fn fieldset() -> element.Scaffold(msg) {
-  #("fieldset", [])
+  #(element.Regular("fieldset"), [])
 }
 
 ///
 pub fn form() -> element.Scaffold(msg) {
-  #("form", [])
+  #(element.Regular("form"), [])
 }
 
 ///
 pub fn input() -> element.ChildlessScaffold(msg) {
-  #("input", [])
+  #(element.Regular("input"), [])
 }
 
 ///
 pub fn label() -> element.Scaffold(msg) {
-  #("label", [])
+  #(element.Regular("label"), [])
 }
 
 ///
 pub fn legend() -> element.Scaffold(msg) {
-  #("legend", [])
+  #(element.Regular("legend"), [])
 }
 
 ///
 pub fn meter() -> element.Scaffold(msg) {
-  #("meter", [])
+  #(element.Regular("meter"), [])
 }
 
 ///
 pub fn optgroup() -> element.Scaffold(msg) {
-  #("optgroup", [])
+  #(element.Regular("optgroup"), [])
 }
 
 ///
 pub fn option() -> element.TextContentScaffold(msg) {
-  #("option", [])
+  #(element.Regular("option"), [])
 }
 
 ///
 pub fn output() -> element.Scaffold(msg) {
-  #("output", [])
+  #(element.Regular("output"), [])
 }
 
 ///
 pub fn progress() -> element.Scaffold(msg) {
-  #("progress", [])
+  #(element.Regular("progress"), [])
 }
 
 ///
 pub fn select() -> element.Scaffold(msg) {
-  #("select", [])
+  #(element.Regular("select"), [])
 }
 
 ///
 pub fn textarea() -> element.TextContentScaffold(msg) {
-  #("textarea", [])
+  #(element.Regular("textarea"), [])
 }
 
 // HTML ELEMENTS: INTERACTIVE ELEMENTS -----------------------------------------
 
 ///
 pub fn details() -> element.Scaffold(msg) {
-  #("details", [])
+  #(element.Regular("details"), [])
 }
 
 ///
 pub fn dialog() -> element.Scaffold(msg) {
-  #("dialog", [])
+  #(element.Regular("dialog"), [])
 }
 
 ///
 pub fn summary() -> element.Scaffold(msg) {
-  #("summary", [])
+  #(element.Regular("summary"), [])
 }
 
 // HTML ELEMENTS: WEB COMPONENTS -----------------------------------------------
 
 ///
 pub fn slot() -> element.ChildlessScaffold(msg) {
-  #("slot", [])
+  #(element.Regular("slot"), [])
 }
 
 ///
 pub fn template() -> element.Scaffold(msg) {
-  #("template", [])
+  #(element.Regular("template"), [])
 }
