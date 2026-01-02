@@ -30,12 +30,13 @@ pub fn emit(event: String, data) {
 /// element) their event names might be slightly different.
 ///
 pub fn on(
-  scaffold: element.Scaffold(msg),
   name: String,
   handler: Decoder(msg),
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on(name, handler))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on(name, handler))
+  }
 }
 
 /// Indicate that the event should have its default behaviour cancelled. This is
@@ -95,66 +96,71 @@ pub fn throttle(event: Attribute(msg), delay: Int) -> Attribute(msg) {
 // MOUSE EVENTS ----------------------------------------------------------------
 
 ///
-pub fn on_click(
-  scaffold: element.Scaffold(msg),
-  msg: msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_click(msg))
+pub fn on_click(msg: msg) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_click(msg))
+  }
 }
 
 ///
 pub fn on_mouse_down(
-  scaffold: element.Scaffold(msg),
   msg: msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_mouse_down(msg))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_mouse_down(msg))
+  }
 }
 
 ///
 pub fn on_mouse_up(
-  scaffold: element.Scaffold(msg),
   msg: msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_mouse_up(msg))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_mouse_up(msg))
+  }
 }
 
 ///
 pub fn on_mouse_enter(
-  scaffold: element.Scaffold(msg),
   msg: msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_mouse_enter(msg))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_mouse_enter(msg))
+  }
 }
 
 ///
 pub fn on_mouse_leave(
-  scaffold: element.Scaffold(msg),
   msg: msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_mouse_leave(msg))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_mouse_leave(msg))
+  }
 }
 
 ///
 pub fn on_mouse_over(
-  scaffold: element.Scaffold(msg),
   msg: msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_mouse_over(msg))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_mouse_over(msg))
+  }
 }
 
 ///
 pub fn on_mouse_out(
-  scaffold: element.Scaffold(msg),
   msg: msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_mouse_out(msg))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_mouse_out(msg))
+  }
 }
 
 // KEYBOARD EVENTS -------------------------------------------------------------
@@ -163,33 +169,36 @@ pub fn on_mouse_out(
 /// current key being pressed.
 ///
 pub fn on_keypress(
-  scaffold: element.Scaffold(msg),
   msg: fn(String) -> msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_keypress(msg))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_keypress(msg))
+  }
 }
 
 /// Listens for key down events on an element, and dispatches a message with the
 /// current key being pressed.
 ///
 pub fn on_keydown(
-  scaffold: element.Scaffold(msg),
   msg: fn(String) -> msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_keydown(msg))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_keydown(msg))
+  }
 }
 
 /// Listens for key up events on an element, and dispatches a message with the
 /// current key being released.
 ///
 pub fn on_keyup(
-  scaffold: element.Scaffold(msg),
   msg: fn(String) -> msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_keyup(msg))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_keyup(msg))
+  }
 }
 
 // FORM EVENTS -----------------------------------------------------------------
@@ -200,11 +209,12 @@ pub fn on_keyup(
 /// implement [controlled inputs](https://github.com/lustre-labs/lustre/blob/main/pages/hints/controlled-vs-uncontrolled-inputs.md).
 ///
 pub fn on_input(
-  scaffold: element.Scaffold(msg),
   msg: fn(String) -> msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_input(msg))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_input(msg))
+  }
 }
 
 /// Listens for change events on elements such as `<input>`, `<textarea>` and
@@ -213,11 +223,12 @@ pub fn on_input(
 /// implement [controlled inputs](https://github.com/lustre-labs/lustre/blob/main/pages/hints/controlled-vs-uncontrolled-inputs.md).
 ///
 pub fn on_change(
-  scaffold: element.Scaffold(msg),
   msg: fn(String) -> msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_change(msg))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_change(msg))
+  }
 }
 
 /// Listens for change events on `<input type="checkbox">` elements. This handler
@@ -226,11 +237,12 @@ pub fn on_change(
 /// [controlled inputs](https://github.com/lustre-labs/lustre/blob/main/pages/hints/controlled-vs-uncontrolled-inputs.md).
 ///
 pub fn on_check(
-  scaffold: element.Scaffold(msg),
   msg: fn(Bool) -> msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_check(msg))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_check(msg))
+  }
 }
 
 /// Listens for submit events on a `<form>` element and receives a list of
@@ -246,27 +258,26 @@ pub fn on_check(
 /// that yourself as an [`Effect`](./effect.html#Effect).
 ///
 pub fn on_submit(
-  scaffold: element.Scaffold(msg),
   msg: fn(List(#(String, String))) -> msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_submit(msg))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_submit(msg))
+  }
 }
 
 // FOCUS EVENTS ----------------------------------------------------------------
 
-pub fn on_focus(
-  scaffold: element.Scaffold(msg),
-  msg: msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_focus(msg))
+pub fn on_focus(msg: msg) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_focus(msg))
+  }
 }
 
-pub fn on_blur(
-  scaffold: element.Scaffold(msg),
-  msg: msg,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(event.on_blur(msg))
+pub fn on_blur(msg: msg) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(event.on_blur(msg))
+  }
 }

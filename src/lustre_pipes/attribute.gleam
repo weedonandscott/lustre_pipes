@@ -29,11 +29,12 @@ pub type Attribute(msg) =
 /// > [here](https://github.com/lustre-labs/lustre/blob/main/pages/hints/attributes-vs-properties.md).
 ///
 pub fn attribute(
-  scaffold: element.Scaffold(msg),
   name: String,
   value: String,
-) -> element.Scaffold(msg) {
-  #(scaffold.0, [attribute.attribute(name, value), ..scaffold.1])
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold: element.Scaffold(msg)) {
+    #(scaffold.0, [attribute.attribute(name, value), ..scaffold.1])
+  }
 }
 
 /// Create a DOM property. This is like saying `element.className = "wibble"` in
@@ -45,11 +46,12 @@ pub fn attribute(
 /// > [here](https://github.com/lustre-labs/lustre/blob/main/pages/hints/attributes-vs-properties.md).
 ///
 pub fn property(
-  scaffold: element.Scaffold(msg),
   name,
   value,
-) -> element.Scaffold(msg) {
-  #(scaffold.0, [attribute.property(name, value), ..scaffold.1])
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold: element.Scaffold(msg)) {
+    #(scaffold.0, [attribute.property(name, value), ..scaffold.1])
+  }
 }
 
 /// Create an empty attribute. This is not added to the DOM and not rendered when
@@ -82,11 +84,12 @@ pub fn add(scaffold: element.Scaffold(msg), attribute: Attribute(msg)) {
 /// | Safari  |                   |                     | Ctrl + Option + key |
 ///
 pub fn accesskey(
-  scaffold: element.Scaffold(msg),
   key: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.accesskey(key))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.accesskey(key))
+  }
 }
 
 /// Controls whether text input is automatically capitalised. The following values
@@ -119,11 +122,12 @@ pub fn accesskey(
 /// - **characters**: All letters should default to uppercase.
 ///
 pub fn autocapitalize(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.autocapitalize(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.autocapitalize(value))
+  }
 }
 
 /// Controls whether the user agent may automatically correct mispelled words
@@ -133,11 +137,12 @@ pub fn autocapitalize(
 /// When disabled the user agent is **never** allowed to correct spelling.
 ///
 pub fn autocorrect(
-  scaffold: element.Scaffold(msg),
   enabled: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.autocorrect(enabled))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.autocorrect(enabled))
+  }
 }
 
 /// For server-rendered HTML, this attribute controls whether an element should
@@ -148,11 +153,12 @@ pub fn autocorrect(
 /// > if it already exists in the DOM.
 ///
 pub fn autofocus(
-  scaffold: element.Scaffold(msg),
   should_autofocus: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.autofocus(should_autofocus))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.autofocus(should_autofocus))
+  }
 }
 
 /// A class is a non-unique identifier for an element primarily used for styling
@@ -166,12 +172,11 @@ pub fn autofocus(
 /// > with any existing other classes on an element. Classes added _later_ in the
 /// > list will override classes added earlier.
 ///
-pub fn class(
-  scaffold: element.Scaffold(msg),
-  name: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.class(name))
+pub fn class(name: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.class(name))
+  }
 }
 
 /// A class is a non-unique identifier for an element primarily used for styling
@@ -184,11 +189,12 @@ pub fn class(
 /// > list will override classes added earlier.
 ///
 pub fn classes(
-  scaffold: element.Scaffold(msg),
   names: List(#(String, Bool)),
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.classes(names))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.classes(names))
+  }
 }
 
 /// Indicates whether the element's content is editable by the user, allowing them
@@ -205,11 +211,12 @@ pub fn classes(
 /// > attribute, and is instead equivalent to setting it to `"true"`!
 ///
 pub fn contenteditable(
-  scaffold: element.Scaffold(msg),
   is_editable: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.contenteditable(is_editable))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.contenteditable(is_editable))
+  }
 }
 
 /// Add a `data-*` attribute to an HTML element. The key will be prefixed by
@@ -218,12 +225,13 @@ pub fn contenteditable(
 /// function.
 ///
 pub fn data(
-  scaffold: element.Scaffold(msg),
   key: String,
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.data(key, value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.data(key, value))
+  }
 }
 
 /// Specifies the text direction of the element's content. The following values
@@ -241,22 +249,24 @@ pub fn data(
 /// > indicates the direction.
 ///
 pub fn dir(
-  scaffold: element.Scaffold(msg),
   direction: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.dir(direction))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.dir(direction))
+  }
 }
 
 /// Indicates whether the element can be dragged as part of the HTML drag-and-drop
 /// API.
 ///
 pub fn draggable(
-  scaffold: element.Scaffold(msg),
   is_draggable: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.draggable(is_draggable))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.draggable(is_draggable))
+  }
 }
 
 /// Specifies what action label (or potentially icon) to present for the "enter"
@@ -278,11 +288,12 @@ pub fn draggable(
 /// information such as the type of an input to determine the label.
 ///
 pub fn enterkeyhint(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.enterkeyhint(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.enterkeyhint(value))
+  }
 }
 
 /// Indicates whether the element is relevant to the page's current state. A
@@ -292,11 +303,12 @@ pub fn enterkeyhint(
 /// that may be made visible later.
 ///
 pub fn hidden(
-  scaffold: element.Scaffold(msg),
   is_hidden: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.hidden(is_hidden))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.hidden(is_hidden))
+  }
 }
 
 /// The `"id"` attribute is used to uniquely identify a single element within a
@@ -304,12 +316,11 @@ pub fn hidden(
 /// `#id`, in JavaScript with `document.getElementById("id")`, or by anchors on
 /// the same page with the URL `"#id"`.
 ///
-pub fn id(
-  scaffold: element.Scaffold(msg),
-  value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.id(value))
+pub fn id(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.id(value))
+  }
 }
 
 /// Marks the element as inert, meaning it is not currently interactive and does
@@ -319,11 +330,12 @@ pub fn id(
 /// know the content they are looking at is inactive.
 ///
 pub fn inert(
-  scaffold: element.Scaffold(msg),
   is_inert: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.inert(is_inert))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.inert(is_inert))
+  }
 }
 
 /// Hints to the user agent about what type of virtual keyboard to display when
@@ -344,34 +356,33 @@ pub fn inert(
 /// custom input method, otherwise the user will not be able to enter any text!
 ///
 pub fn inputmode(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.inputmode(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.inputmode(value))
+  }
 }
 
 /// Specifies the [customised built-in element](https://html.spec.whatwg.org/#customized-built-in-element)
 /// to be used in place of the native element this attribute is applied to.
 ///
-pub fn is(
-  scaffold: element.Scaffold(msg),
-  value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.is(value))
+pub fn is(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.is(value))
+  }
 }
 
 /// Used as part of the [Microdata](https://schema.org/docs/gs.html) format to
 /// specify the global unique identifier of an item, for example books that are
 /// identifiable by their ISBN.
 ///
-pub fn itemid(
-  scaffold: element.Scaffold(msg),
-  id: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.itemid(id))
+pub fn itemid(id: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.itemid(id))
+  }
 }
 
 /// Used as part of the [Microdata](https://schema.org/docs/gs.html) format to
@@ -379,11 +390,12 @@ pub fn itemid(
 /// given property name.
 ///
 pub fn itemprop(
-  scaffold: element.Scaffold(msg),
   name: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.itemprop(name))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.itemprop(name))
+  }
 }
 
 /// Used as part of the [Microdata](https://schema.org/docs/gs.html) format to
@@ -391,11 +403,12 @@ pub fn itemprop(
 /// data.
 ///
 pub fn itemscope(
-  scaffold: element.Scaffold(msg),
   has_scope: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.itemscope(has_scope))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.itemscope(has_scope))
+  }
 }
 
 /// Used as part of the [Microdata](https://schema.org/docs/gs.html) format to
@@ -404,11 +417,12 @@ pub fn itemscope(
 /// as a schema.org type.
 ///
 pub fn itemtype(
-  scaffold: element.Scaffold(msg),
   url: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.itemtype(url))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.itemtype(url))
+  }
 }
 
 /// Specifies the language of the element's content and the language of any of
@@ -419,22 +433,24 @@ pub fn itemtype(
 /// The value must be a valid [BCP 47 language tag](https://tools.ietf.org/html/bcp47).
 ///
 pub fn lang(
-  scaffold: element.Scaffold(msg),
   language: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.lang(language))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.lang(language))
+  }
 }
 
 /// A cryptographic nonce used by CSP (Content Security Policy) to allow or
 /// deny the fetch of a given resource.
 ///
 pub fn nonce(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.nonce(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.nonce(value))
+  }
 }
 
 /// Specifies that the element should be treated as a popover, rendering it in
@@ -459,11 +475,12 @@ pub fn nonce(
 /// the popover.
 ///
 pub fn popover(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.popover(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.popover(value))
+  }
 }
 
 /// Indicates whether the element's content should be checked for spelling errors.
@@ -471,11 +488,12 @@ pub fn popover(
 /// [`contenteditable`](#contenteditable).
 ///
 pub fn spellcheck(
-  scaffold: element.Scaffold(msg),
   should_check: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.spellcheck(should_check))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.spellcheck(should_check))
+  }
 }
 
 /// Provide a single property name and value to be used as inline styles for the
@@ -487,12 +505,13 @@ pub fn spellcheck(
 /// > list will override styles added earlier.
 ///
 pub fn style(
-  scaffold: element.Scaffold(msg),
   property: String,
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.style(property, value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.style(property, value))
+  }
 }
 
 /// Provide a list of property-value pairs to be used as inline styles for the
@@ -503,11 +522,12 @@ pub fn style(
 /// > list will override styles added earlier.
 ///
 pub fn styles(
-  scaffold: element.Scaffold(msg),
   properties: List(#(String, String)),
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.styles(properties))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.styles(properties))
+  }
 }
 
 /// Specifies the tabbing order of the element. If an element is not typically
@@ -530,11 +550,12 @@ pub fn styles(
 /// the relative order of focusable elements can be difficult and error-prone.
 ///
 pub fn tabindex(
-  scaffold: element.Scaffold(msg),
   index: Int,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.tabindex(index))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.tabindex(index))
+  }
 }
 
 /// Annotate an element with additional information that may be suitable as a
@@ -545,12 +566,11 @@ pub fn tabindex(
 /// expose the `title` attribute to keyboard-only users or touch devices, for
 /// example.
 ///
-pub fn title(
-  scaffold: element.Scaffold(msg),
-  text: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.title(text))
+pub fn title(text: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.title(text))
+  }
 }
 
 /// Controls whether an element's content may be translated by the user agent
@@ -572,21 +592,23 @@ pub fn title(
 /// | value       | input (with type="button" or type="reset") |
 ///
 pub fn translate(
-  scaffold: element.Scaffold(msg),
   should_translate: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.translate(should_translate))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.translate(should_translate))
+  }
 }
 
 /// Indicates if writing suggestions should be enabled for this element.
 ///
 pub fn writingsuggestions(
-  scaffold: element.Scaffold(msg),
   enabled: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.writingsuggestions(enabled))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.writingsuggestions(enabled))
+  }
 }
 
 // ANCHOR AND LINK ATTRIBUTES --------------------------------------------------
@@ -594,12 +616,11 @@ pub fn writingsuggestions(
 /// Specifies the URL of a linked resource. This attribute can be used on various
 /// elements to create hyperlinks or to load resources.
 ///
-pub fn href(
-  scaffold: element.Scaffold(msg),
-  url: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.href(url))
+pub fn href(url: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.href(url))
+  }
 }
 
 /// Specifies where to display the linked resource or where to open the link.
@@ -617,22 +638,24 @@ pub fn href(
 /// > removes user control over their browsing experience.
 ///
 pub fn target(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.target(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.target(value))
+  }
 }
 
 /// Indicates that the linked resource should be downloaded rather than displayed.
 /// When provided with a value, it suggests a filename for the downloaded file.
 ///
 pub fn download(
-  scaffold: element.Scaffold(msg),
   filename: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.download(filename))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.download(filename))
+  }
 }
 
 /// Provides a space-separated list of URLs that will be notified if the user
@@ -640,33 +663,34 @@ pub fn download(
 /// of type `ping/1.0`.
 ///
 pub fn ping(
-  scaffold: element.Scaffold(msg),
   urls: List(String),
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.ping(urls))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.ping(urls))
+  }
 }
 
 /// Specifies the relationship between the current document and the linked resource.
 /// Multiple relationship values can be provided as a space-separated list.
 ///
-pub fn rel(
-  scaffold: element.Scaffold(msg),
-  value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.rel(value))
+pub fn rel(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.rel(value))
+  }
 }
 
 /// Specifies the language of the linked resource. The value must be a valid
 /// [BCP 47 language tag](https://tools.ietf.org/html/bcp47).
 ///
 pub fn hreflang(
-  scaffold: element.Scaffold(msg),
   language: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.hreflang(language))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.hreflang(language))
+  }
 }
 
 /// Specifies the referrer policy for fetches initiated by the element. The
@@ -684,11 +708,12 @@ pub fn hreflang(
 /// | "unsafe-url"                      | Always send the full URL                               |
 ///
 pub fn referrerpolicy(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.referrerpolicy(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.referrerpolicy(value))
+  }
 }
 
 // IMAGE ATTRIBUTES ------------------------------------------------------------
@@ -697,22 +722,20 @@ pub fn referrerpolicy(
 /// This attribute is essential for accessibility, providing context about the
 /// image to users who cannot see it, including those using screen readers.
 ///
-pub fn alt(
-  scaffold: element.Scaffold(msg),
-  text: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.alt(text))
+pub fn alt(text: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.alt(text))
+  }
 }
 
 /// Specifies the URL of an image or resource to be used.
 ///
-pub fn src(
-  scaffold: element.Scaffold(msg),
-  url: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.src(url))
+pub fn src(url: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.src(url))
+  }
 }
 
 /// Specifies a set of image sources for different display scenarios. This allows
@@ -720,107 +743,111 @@ pub fn src(
 /// resolution and viewport size.
 ///
 pub fn srcset(
-  scaffold: element.Scaffold(msg),
   sources: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.srcset(sources))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.srcset(sources))
+  }
 }
 
 /// Used with `srcset` to define the size of images in different layout scenarios.
 /// Helps the browser select the most appropriate image source.
 ///
 pub fn sizes(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.sizes(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.sizes(value))
+  }
 }
 
 /// Configures the CORS (Cross-Origin Resource Sharing) settings for the element.
 /// Valid values are "anonymous" and "use-credentials".
 ///
 pub fn crossorigin(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.crossorigin(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.crossorigin(value))
+  }
 }
 
 /// Specifies the name of an image map to be used with the image.
 ///
 pub fn usemap(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.usemap(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.usemap(value))
+  }
 }
 
 /// Indicates that the image is a server-side image map. When a user clicks on the
 /// image, the coordinates of the click are sent to the server.
 ///
-pub fn ismap(
-  scaffold: element.Scaffold(msg),
-  is_map: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.ismap(is_map))
+pub fn ismap(is_map: Bool) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.ismap(is_map))
+  }
 }
 
 /// Specifies the width of the element in pixels.
 ///
-pub fn width(
-  scaffold: element.Scaffold(msg),
-  value: Int,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.width(value))
+pub fn width(value: Int) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.width(value))
+  }
 }
 
 /// Specifies the height of the element in pixels.
 ///
-pub fn height(
-  scaffold: element.Scaffold(msg),
-  value: Int,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.height(value))
+pub fn height(value: Int) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.height(value))
+  }
 }
 
 /// Provides a hint about how the image should be decoded. Valid values are
 /// "sync", "async", and "auto".
 ///
 pub fn decoding(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.decoding(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.decoding(value))
+  }
 }
 
 /// Indicates how the browser should load the image. Valid values are "eager"
 /// (load immediately) and "lazy" (defer loading until needed).
 ///
 pub fn loading(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.loading(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.loading(value))
+  }
 }
 
 /// Sets the priority for fetches initiated by the element. Valid values are
 /// "high", "low", and "auto".
 ///
 pub fn fetchpriority(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.fetchpriority(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.fetchpriority(value))
+  }
 }
 
 // FORM ATTRIBUTES -------------------------------------------------------------
@@ -830,22 +857,22 @@ pub fn fetchpriority(
 /// specified as a space-separated list.
 ///
 pub fn accept_charset(
-  scaffold: element.Scaffold(msg),
   charsets: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.accept_charset(charsets))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.accept_charset(charsets))
+  }
 }
 
 /// Specifies the URL to which the form's data should be sent when submitted.
 /// This can be overridden by formaction attributes on submit buttons.
 ///
-pub fn action(
-  scaffold: element.Scaffold(msg),
-  url: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.action(url))
+pub fn action(url: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.action(url))
+  }
 }
 
 /// Specifies how form data should be encoded before sending it to the server.
@@ -858,11 +885,12 @@ pub fn action(
 /// | "text/plain"                        | Simple encoding with minimal escaping  |
 ///
 pub fn enctype(
-  scaffold: element.Scaffold(msg),
   encoding_type: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.enctype(encoding_type))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.enctype(encoding_type))
+  }
 }
 
 /// Specifies the HTTP method to use when submitting the form. Common values are:
@@ -874,22 +902,24 @@ pub fn enctype(
 /// | "dialog" | Closes a dialog if the form is inside one                |
 ///
 pub fn method(
-  scaffold: element.Scaffold(msg),
   http_method: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.method(http_method))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.method(http_method))
+  }
 }
 
 /// When present, indicates that the form should not be validated when submitted.
 /// This allows submission of forms with invalid or incomplete data.
 ///
 pub fn novalidate(
-  scaffold: element.Scaffold(msg),
   disable_validation: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.novalidate(disable_validation))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.novalidate(disable_validation))
+  }
 }
 
 // INPUT ATTRIBUTES ------------------------------------------------------------
@@ -914,11 +944,12 @@ pub fn novalidate(
 /// > type.
 ///
 pub fn accept(
-  scaffold: element.Scaffold(msg),
   values: List(String),
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.accept(values))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.accept(values))
+  }
 }
 
 /// Allow a colour's alpha component to be manipulated, allowing the user to
@@ -929,11 +960,12 @@ pub fn accept(
 /// - `"color"`
 ///
 pub fn alpha(
-  scaffold: element.Scaffold(msg),
   allowed: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.alpha(allowed))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.alpha(allowed))
+  }
 }
 
 /// A hint for the user agent to automatically fill the value of the input with
@@ -978,11 +1010,12 @@ pub fn alpha(
 /// - `"week"`
 ///
 pub fn autocomplete(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.autocomplete(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.autocomplete(value))
+  }
 }
 
 /// Whether the control is checked or not. When participating in a form, the
@@ -996,11 +1029,12 @@ pub fn autocomplete(
 /// - `"radio"`
 ///
 pub fn checked(
-  scaffold: element.Scaffold(msg),
   is_checked: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.checked(is_checked))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.checked(is_checked))
+  }
 }
 
 /// The color space of the serialised CSS color. It also hints to user agents
@@ -1019,11 +1053,12 @@ pub fn checked(
 /// - `"color"`
 ///
 pub fn colorspace(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.colorspace(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.colorspace(value))
+  }
 }
 
 /// The name of the field included in a form that indicates the direcionality of
@@ -1041,39 +1076,42 @@ pub fn colorspace(
 /// - `"url"`
 ///
 pub fn dirname(
-  scaffold: element.Scaffold(msg),
   direction: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.dirname(direction))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.dirname(direction))
+  }
 }
 
 /// Controls whether or not the input is disabled. Disabled inputs are not
 /// validated during form submission and are not interactive.
 ///
 pub fn disabled(
-  scaffold: element.Scaffold(msg),
   is_disabled: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.disabled(is_disabled))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.disabled(is_disabled))
+  }
 }
 
 ///
 ///
-pub fn for(scaffold: element.Scaffold(msg), id: String) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.for(id))
+pub fn for(id: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.for(id))
+  }
 }
 
 /// Associates the input with a form element located elsewhere in the document.
 ///
-pub fn form(
-  scaffold: element.Scaffold(msg),
-  id: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.form(id))
+pub fn form(id: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.form(id))
+  }
 }
 
 /// The URL to use for form submission. This URL will override the [`"action"`](#action)
@@ -1085,11 +1123,12 @@ pub fn form(
 /// - `"submit"`
 ///
 pub fn formaction(
-  scaffold: element.Scaffold(msg),
   url: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.formaction(url))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.formaction(url))
+  }
 }
 
 /// Entry list encoding type to use for form submission
@@ -1098,11 +1137,12 @@ pub fn formaction(
 /// - `"submit"`
 ///
 pub fn formenctype(
-  scaffold: element.Scaffold(msg),
   encoding_type: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.formenctype(encoding_type))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.formenctype(encoding_type))
+  }
 }
 
 /// Variant to use for form submission
@@ -1111,11 +1151,12 @@ pub fn formenctype(
 /// - `"submit"`
 ///
 pub fn formmethod(
-  scaffold: element.Scaffold(msg),
   method: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.formmethod(method))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.formmethod(method))
+  }
 }
 
 /// Bypass form control validation for form submission
@@ -1124,11 +1165,12 @@ pub fn formmethod(
 /// - `"submit"`
 ///
 pub fn formnovalidate(
-  scaffold: element.Scaffold(msg),
   no_validate: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.formnovalidate(no_validate))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.formnovalidate(no_validate))
+  }
 }
 
 /// Navigable for form submission
@@ -1137,11 +1179,12 @@ pub fn formnovalidate(
 /// - `"submit"`
 ///
 pub fn formtarget(
-  scaffold: element.Scaffold(msg),
   target: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.formtarget(target))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.formtarget(target))
+  }
 }
 
 /// List of autocomplete options
@@ -1162,12 +1205,11 @@ pub fn formtarget(
 /// - `"url"`
 /// - `"week"`
 ///
-pub fn list(
-  scaffold: element.Scaffold(msg),
-  id: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.list(id))
+pub fn list(id: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.list(id))
+  }
 }
 
 /// Constrain the maximum value of a form control. The exact syntax of this value
@@ -1184,12 +1226,11 @@ pub fn list(
 /// - `"time"`
 /// - `"week"`
 ///
-pub fn max(
-  scaffold: element.Scaffold(msg),
-  value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.max(value))
+pub fn max(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.max(value))
+  }
 }
 
 /// Maximum length of value
@@ -1204,11 +1245,12 @@ pub fn max(
 /// - `"url"`
 ///
 pub fn maxlength(
-  scaffold: element.Scaffold(msg),
   length: Int,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.maxlength(length))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.maxlength(length))
+  }
 }
 
 /// Minimum value
@@ -1223,12 +1265,11 @@ pub fn maxlength(
 /// - `"time"`
 /// - `"week"`
 ///
-pub fn min(
-  scaffold: element.Scaffold(msg),
-  value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.min(value))
+pub fn min(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.min(value))
+  }
 }
 
 /// Minimum length of value
@@ -1241,11 +1282,12 @@ pub fn min(
 /// - `"url"`
 ///
 pub fn minlength(
-  scaffold: element.Scaffold(msg),
   length: Int,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.minlength(length))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.minlength(length))
+  }
 }
 
 /// Whether an input or select may allow multiple values to be selected at once.
@@ -1256,21 +1298,23 @@ pub fn minlength(
 /// - `"file"`
 ///
 pub fn multiple(
-  scaffold: element.Scaffold(msg),
   allow_multiple: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.multiple(allow_multiple))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.multiple(allow_multiple))
+  }
 }
 
 /// Name of the element to use for form submission and in the form.elements API
 ///
 pub fn name(
-  scaffold: element.Scaffold(msg),
   element_name: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.name(element_name))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.name(element_name))
+  }
 }
 
 /// Pattern to be matched by the form control's value
@@ -1283,11 +1327,12 @@ pub fn name(
 /// - `"url"`
 ///
 pub fn pattern(
-  scaffold: element.Scaffold(msg),
   regex: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.pattern(regex))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.pattern(regex))
+  }
 }
 
 /// User-visible label to be placed within the form control
@@ -1301,11 +1346,12 @@ pub fn pattern(
 /// - `"url"`
 ///
 pub fn placeholder(
-  scaffold: element.Scaffold(msg),
   text: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.placeholder(text))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.placeholder(text))
+  }
 }
 
 /// Targets a popover element to toggle, show, or hide
@@ -1318,11 +1364,12 @@ pub fn placeholder(
 /// - `"submit"`
 ///
 pub fn popovertarget(
-  scaffold: element.Scaffold(msg),
   id: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.popovertarget(id))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.popovertarget(id))
+  }
 }
 
 /// Indicates whether a targeted popover element is to be toggled, shown, or hidden
@@ -1335,11 +1382,12 @@ pub fn popovertarget(
 /// - `"submit"`
 ///
 pub fn popovertargetaction(
-  scaffold: element.Scaffold(msg),
   action: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.popovertargetaction(action))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.popovertargetaction(action))
+  }
 }
 
 /// Whether to allow the value to be edited by the user
@@ -1359,11 +1407,12 @@ pub fn popovertargetaction(
 /// - `"week"`
 ///
 pub fn readonly(
-  scaffold: element.Scaffold(msg),
   is_readonly: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.readonly(is_readonly))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.readonly(is_readonly))
+  }
 }
 
 /// Whether the control is required for form submission
@@ -1385,11 +1434,12 @@ pub fn readonly(
 /// - `"week"`
 ///
 pub fn required(
-  scaffold: element.Scaffold(msg),
   is_required: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.required(is_required))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.required(is_required))
+  }
 }
 
 /// Controls whether or not a select's `<option>` is selected or not. Only one
@@ -1397,11 +1447,12 @@ pub fn required(
 /// attribute is set on the select element.
 ///
 pub fn selected(
-  scaffold: element.Scaffold(msg),
   is_selected: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.selected(is_selected))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.selected(is_selected))
+  }
 }
 
 /// Size of the control
@@ -1415,12 +1466,11 @@ pub fn selected(
 /// - `"text"`
 /// - `"url"`
 ///
-pub fn size(
-  scaffold: element.Scaffold(msg),
-  value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.size(value))
+pub fn size(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.size(value))
+  }
 }
 
 /// Granularity to be matched by the form control's value
@@ -1435,32 +1485,33 @@ pub fn size(
 /// - `"time"`
 /// - `"week"`
 ///
-pub fn step(
-  scaffold: element.Scaffold(msg),
-  value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.step(value))
+pub fn step(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.step(value))
+  }
 }
 
 /// Type of form control
 ///
 pub fn type_(
-  scaffold: element.Scaffold(msg),
   control_type: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.type_(control_type))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.type_(control_type))
+  }
 }
 
 /// Value of the form control
 ///
 pub fn value(
-  scaffold: element.Scaffold(msg),
   control_value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.value(control_value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.value(control_value))
+  }
 }
 
 // META ATTRIBUTES -------------------------------------------------------------
@@ -1469,44 +1520,48 @@ pub fn value(
 /// behaviors the user agent should follow.
 ///
 pub fn http_equiv(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.http_equiv(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.http_equiv(value))
+  }
 }
 
 /// Specifies the value of the meta element, which varies depending on the value
 /// of the name or http-equiv attribute.
 ///
 pub fn content(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.content(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.content(value))
+  }
 }
 
 /// Declares the character encoding used in the document. When used with a meta
 /// element, this replaces the need for the `http_equiv("content-type")` attribute.
 ///
 pub fn charset(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.charset(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.charset(value))
+  }
 }
 
 /// Specifies the media types the resource applies to. This is commonly used with
 /// link elements for stylesheets to determine when they should be loaded.
 ///
 pub fn media(
-  scaffold: element.Scaffold(msg),
   query: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.media(query))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.media(query))
+  }
 }
 
 // AUDIO AND VIDEO ATTRIBUTES --------------------------------------------------
@@ -1520,44 +1575,48 @@ pub fn media(
 /// > was called.
 ///
 pub fn autoplay(
-  scaffold: element.Scaffold(msg),
   auto_play: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.autoplay(auto_play))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.autoplay(auto_play))
+  }
 }
 
 /// When present, this attribute shows the browser's built-in control panel for the
 /// media player, giving users control over playback, volume, seeking, and more.
 ///
 pub fn controls(
-  scaffold: element.Scaffold(msg),
   show_controls: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.controls(show_controls))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.controls(show_controls))
+  }
 }
 
 /// When present, this attribute indicates that the media should start over again
 /// from the beginning when it reaches the end.
 ///
 pub fn loop(
-  scaffold: element.Scaffold(msg),
   should_loop: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.loop(should_loop))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.loop(should_loop))
+  }
 }
 
 /// When present, this attribute indicates that the audio output of the media element
 /// should be initially silenced.
 ///
 pub fn muted(
-  scaffold: element.Scaffold(msg),
   is_muted: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.muted(is_muted))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.muted(is_muted))
+  }
 }
 
 /// Encourages the user agent to display video content within the element's
@@ -1568,22 +1627,22 @@ pub fn muted(
 /// false does not imply that the video will be played in fullscreen.
 ///
 pub fn playsinline(
-  scaffold: element.Scaffold(msg),
   play_inline: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.playsinline(play_inline))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.playsinline(play_inline))
+  }
 }
 
 /// Specifies an image to be shown while the video is downloading, or until the
 /// user hits the play button.
 ///
-pub fn poster(
-  scaffold: element.Scaffold(msg),
-  url: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.poster(url))
+pub fn poster(url: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.poster(url))
+  }
 }
 
 /// Provides a hint to the browser about what the author thinks will lead to the
@@ -1596,11 +1655,12 @@ pub fn poster(
 /// | "none"     | Hints to the user agent that server traffic should be minimised. |
 ///
 pub fn preload(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.preload(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.preload(value))
+  }
 }
 
 // TEMPLATE ATTRIBUTES ---------------------------------------------------------
@@ -1619,44 +1679,48 @@ pub fn preload(
 /// > root is created correctly.
 ///
 pub fn shadowrootmode(
-  scaffold: element.Scaffold(msg),
   mode: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.shadowrootmode(mode))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.shadowrootmode(mode))
+  }
 }
 
 /// Indicates whether focus should be delegated to the shadow root when an element
 /// in the shadow tree gains focus.
 ///
 pub fn shadowrootdelegatesfocus(
-  scaffold: element.Scaffold(msg),
   delegates: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.shadowrootdelegatesfocus(delegates))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.shadowrootdelegatesfocus(delegates))
+  }
 }
 
 /// Determines whether the shadow root can be cloned when the host element is
 /// cloned.
 ///
 pub fn shadowrootclonable(
-  scaffold: element.Scaffold(msg),
   clonable: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.shadowrootclonable(clonable))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.shadowrootclonable(clonable))
+  }
 }
 
 /// Controls whether the shadow root should be preserved during serialization
 /// operations like copying to the clipboard or saving a page.
 ///
 pub fn shadowrootserializable(
-  scaffold: element.Scaffold(msg),
   serializable: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.shadowrootserializable(serializable))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.shadowrootserializable(serializable))
+  }
 }
 
 // ARIA ATTRIBUTES -------------------------------------------------------------
@@ -1665,33 +1729,34 @@ pub fn shadowrootserializable(
 /// `aria-`.
 ///
 pub fn aria(
-  scaffold: element.Scaffold(msg),
   name: String,
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria(name, value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria(name, value))
+  }
 }
 
 ///
 ///
-pub fn role(
-  scaffold: element.Scaffold(msg),
-  name: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.role(name))
+pub fn role(name: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.role(name))
+  }
 }
 
 /// The aria-activedescendant attribute identifies the currently active element
 /// when focus is on a composite widget, combobox, textbox, group, or application.
 ///
 pub fn aria_activedescendant(
-  scaffold: element.Scaffold(msg),
   id: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_activedescendant(id))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_activedescendant(id))
+  }
 }
 
 /// In ARIA live regions, the global aria-atomic attribute indicates whether
@@ -1700,11 +1765,12 @@ pub fn aria_activedescendant(
 /// aria-relevant attribute.
 ///
 pub fn aria_atomic(
-  scaffold: element.Scaffold(msg),
   value: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_atomic(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_atomic(value))
+  }
 }
 
 /// The aria-autocomplete attribute indicates whether inputting text could trigger
@@ -1713,22 +1779,24 @@ pub fn aria_atomic(
 /// are made.
 ///
 pub fn aria_autocomplete(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_autocomplete(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_autocomplete(value))
+  }
 }
 
 /// The global aria-braillelabel property defines a string value that labels the
 /// current element, which is intended to be converted into Braille.
 ///
 pub fn aria_braillelabel(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_braillelabel(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_braillelabel(value))
+  }
 }
 
 /// The global aria-brailleroledescription attribute defines a human-readable,
@@ -1736,11 +1804,12 @@ pub fn aria_braillelabel(
 /// to be converted into Braille.
 ///
 pub fn aria_brailleroledescription(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_brailleroledescription(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_brailleroledescription(value))
+  }
 }
 
 /// Used in ARIA live regions, the global aria-busy state indicates an element is
@@ -1748,66 +1817,72 @@ pub fn aria_brailleroledescription(
 /// changes are complete before informing the user about the update.
 ///
 pub fn aria_busy(
-  scaffold: element.Scaffold(msg),
   value: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_busy(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_busy(value))
+  }
 }
 
 /// The aria-checked attribute indicates the current "checked" state of checkboxes,
 /// radio buttons, and other widgets.
 ///
 pub fn aria_checked(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_checked(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_checked(value))
+  }
 }
 
 /// The aria-colcount attribute defines the total number of columns in a table,
 /// grid, or treegrid when not all columns are present in the DOM.
 ///
 pub fn aria_colcount(
-  scaffold: element.Scaffold(msg),
   value: Int,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_colcount(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_colcount(value))
+  }
 }
 
 /// The aria-colindex attribute defines an element's column index or position with
 /// respect to the total number of columns within a table, grid, or treegrid.
 ///
 pub fn aria_colindex(
-  scaffold: element.Scaffold(msg),
   value: Int,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_colindex(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_colindex(value))
+  }
 }
 
 /// The aria-colindextext attribute defines a human-readable text alternative of
 /// the numeric aria-colindex.
 ///
 pub fn aria_colindextext(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_colindextext(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_colindextext(value))
+  }
 }
 
 /// The aria-colspan attribute defines the number of columns spanned by a cell
 /// or gridcell within a table, grid, or treegrid.
 ///
 pub fn aria_colspan(
-  scaffold: element.Scaffold(msg),
   value: Int,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_colspan(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_colspan(value))
+  }
 }
 
 /// The global aria-controls property identifies the element (or elements) whose
@@ -1815,77 +1890,84 @@ pub fn aria_colspan(
 /// set.
 ///
 pub fn aria_controls(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_controls(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_controls(value))
+  }
 }
 
 /// A non-null aria-current state on an element indicates that this element represents
 /// the current item within a container or set of related elements.
 ///
 pub fn aria_current(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_current(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_current(value))
+  }
 }
 
 /// The global aria-describedby attribute identifies the element (or elements)
 /// that describes the element on which the attribute is set.
 ///
 pub fn aria_describedby(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_describedby(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_describedby(value))
+  }
 }
 
 /// The global aria-description attribute defines a string value that describes
 /// or annotates the current element.
 ///
 pub fn aria_description(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_description(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_description(value))
+  }
 }
 
 /// The global aria-details attribute identifies the element (or elements) that
 /// provide additional information related to the object.
 ///
 pub fn aria_details(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_details(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_details(value))
+  }
 }
 
 /// The aria-disabled state indicates that the element is perceivable but disabled,
 /// so it is not editable or otherwise operable.
 ///
 pub fn aria_disabled(
-  scaffold: element.Scaffold(msg),
   value: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_disabled(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_disabled(value))
+  }
 }
 
 /// The aria-errormessage attribute on an object identifies the element that
 /// provides an error message for that object.
 ///
 pub fn aria_errormessage(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_errormessage(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_errormessage(value))
+  }
 }
 
 /// The aria-expanded attribute is set on an element to indicate if a control is
@@ -1893,11 +1975,12 @@ pub fn aria_errormessage(
 /// or hidden.
 ///
 pub fn aria_expanded(
-  scaffold: element.Scaffold(msg),
   value: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_expanded(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_expanded(value))
+  }
 }
 
 /// The global aria-flowto attribute identifies the next element (or elements) in
@@ -1906,11 +1989,12 @@ pub fn aria_expanded(
 /// discretion.
 ///
 pub fn aria_flowto(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_flowto(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_flowto(value))
+  }
 }
 
 /// The aria-haspopup attribute indicates the availability and type of interactive
@@ -1918,77 +2002,84 @@ pub fn aria_flowto(
 /// set.
 ///
 pub fn aria_haspopup(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_haspopup(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_haspopup(value))
+  }
 }
 
 /// The aria-hidden state indicates whether the element is exposed to an accessibility
 /// API.
 ///
 pub fn aria_hidden(
-  scaffold: element.Scaffold(msg),
   value: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_hidden(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_hidden(value))
+  }
 }
 
 /// The aria-invalid state indicates the entered value does not conform to the
 /// format expected by the application.
 ///
 pub fn aria_invalid(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_invalid(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_invalid(value))
+  }
 }
 
 /// The global aria-keyshortcuts attribute indicates keyboard shortcuts that an
 /// author has implemented to activate or give focus to an element.
 ///
 pub fn aria_keyshortcuts(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_keyshortcuts(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_keyshortcuts(value))
+  }
 }
 
 /// The aria-label attribute defines a string value that can be used to name an
 /// element, as long as the element's role does not prohibit naming.
 ///
 pub fn aria_label(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_label(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_label(value))
+  }
 }
 
 /// The aria-labelledby attribute identifies the element (or elements) that labels
 /// the element it is applied to.
 ///
 pub fn aria_labelledby(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_labelledby(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_labelledby(value))
+  }
 }
 
 /// The aria-level attribute defines the hierarchical level of an element within
 /// a structure.
 ///
 pub fn aria_level(
-  scaffold: element.Scaffold(msg),
   value: Int,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_level(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_level(value))
+  }
 }
 
 /// The global aria-live attribute indicates that an element will be updated, and
@@ -1996,54 +2087,59 @@ pub fn aria_level(
 /// user can expect from the live region.
 ///
 pub fn aria_live(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_live(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_live(value))
+  }
 }
 
 /// The aria-modal attribute indicates whether an element is modal when displayed.
 ///
 pub fn aria_modal(
-  scaffold: element.Scaffold(msg),
   value: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_modal(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_modal(value))
+  }
 }
 
 /// The aria-multiline attribute indicates whether a textbox accepts multiple
 /// lines of input or only a single line.
 ///
 pub fn aria_multiline(
-  scaffold: element.Scaffold(msg),
   value: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_multiline(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_multiline(value))
+  }
 }
 
 /// The aria-multiselectable attribute indicates that the user may select more
 /// than one item from the current selectable descendants.
 ///
 pub fn aria_multiselectable(
-  scaffold: element.Scaffold(msg),
   value: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_multiselectable(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_multiselectable(value))
+  }
 }
 
 /// The aria-orientation attribute indicates whether the element's orientation is
 /// horizontal, vertical, or unknown/ambiguous.
 ///
 pub fn aria_orientation(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_orientation(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_orientation(value))
+  }
 }
 
 /// The aria-owns attribute identifies an element (or elements) in order to define
@@ -2051,11 +2147,12 @@ pub fn aria_orientation(
 /// child elements when the DOM hierarchy cannot be used to represent the relationship.
 ///
 pub fn aria_owns(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_owns(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_owns(value))
+  }
 }
 
 /// The aria-placeholder attribute defines a short hint (a word or short phrase)
@@ -2063,11 +2160,12 @@ pub fn aria_owns(
 /// The hint can be a sample value or a brief description of the expected format.
 ///
 pub fn aria_placeholder(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_placeholder(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_placeholder(value))
+  }
 }
 
 /// The aria-posinset attribute defines an element's number or position in the
@@ -2075,33 +2173,36 @@ pub fn aria_placeholder(
 /// DOM.
 ///
 pub fn aria_posinset(
-  scaffold: element.Scaffold(msg),
   value: Int,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_posinset(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_posinset(value))
+  }
 }
 
 /// The aria-pressed attribute indicates the current "pressed" state of a toggle
 /// button.
 ///
 pub fn aria_pressed(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_pressed(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_pressed(value))
+  }
 }
 
 /// The aria-readonly attribute indicates that the element is not editable, but is
 /// otherwise operable.
 ///
 pub fn aria_readonly(
-  scaffold: element.Scaffold(msg),
   value: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_readonly(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_readonly(value))
+  }
 }
 
 /// Used in ARIA live regions, the global aria-relevant attribute indicates what
@@ -2109,151 +2210,165 @@ pub fn aria_readonly(
 /// a live region is modified.
 ///
 pub fn aria_relevant(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_relevant(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_relevant(value))
+  }
 }
 
 /// The aria-required attribute indicates that user input is required on the element
 /// before a form may be submitted.
 ///
 pub fn aria_required(
-  scaffold: element.Scaffold(msg),
   value: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_required(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_required(value))
+  }
 }
 
 /// The aria-roledescription attribute defines a human-readable, author-localised
 /// description for the role of an element.
 ///
 pub fn aria_roledescription(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_roledescription(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_roledescription(value))
+  }
 }
 
 /// The aria-rowcount attribute defines the total number of rows in a table,
 /// grid, or treegrid.
 ///
 pub fn aria_rowcount(
-  scaffold: element.Scaffold(msg),
   value: Int,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_rowcount(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_rowcount(value))
+  }
 }
 
 /// The aria-rowindex attribute defines an element's position with respect to the
 /// total number of rows within a table, grid, or treegrid.
 ///
 pub fn aria_rowindex(
-  scaffold: element.Scaffold(msg),
   value: Int,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_rowindex(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_rowindex(value))
+  }
 }
 
 /// The aria-rowindextext attribute defines a human-readable text alternative of
 /// aria-rowindex.
 ///
 pub fn aria_rowindextext(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_rowindextext(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_rowindextext(value))
+  }
 }
 
 /// The aria-rowspan attribute defines the number of rows spanned by a cell or
 /// gridcell within a table, grid, or treegrid.
 ///
 pub fn aria_rowspan(
-  scaffold: element.Scaffold(msg),
   value: Int,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_rowspan(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_rowspan(value))
+  }
 }
 
 /// The aria-selected attribute indicates the current "selected" state of various
 /// widgets.
 ///
 pub fn aria_selected(
-  scaffold: element.Scaffold(msg),
   value: Bool,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_selected(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_selected(value))
+  }
 }
 
 /// The aria-setsize attribute defines the number of items in the current set of
 /// listitems or treeitems when not all items in the set are present in the DOM.
 ///
 pub fn aria_setsize(
-  scaffold: element.Scaffold(msg),
   value: Int,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_setsize(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_setsize(value))
+  }
 }
 
 /// The aria-sort attribute indicates if items in a table or grid are sorted in
 /// ascending or descending order.
 ///
 pub fn aria_sort(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_sort(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_sort(value))
+  }
 }
 
 /// The aria-valuemax attribute defines the maximum allowed value for a range
 /// widget.
 ///
 pub fn aria_valuemax(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_valuemax(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_valuemax(value))
+  }
 }
 
 /// The aria-valuemin attribute defines the minimum allowed value for a range
 /// widget.
 ///
 pub fn aria_valuemin(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_valuemin(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_valuemin(value))
+  }
 }
 
 /// The aria-valuenow attribute defines the current value for a range widget.
 ///
 pub fn aria_valuenow(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_valuenow(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_valuenow(value))
+  }
 }
 
 /// The aria-valuetext attribute defines the human-readable text alternative of
 /// aria-valuenow for a range widget.
 ///
 pub fn aria_valuetext(
-  scaffold: element.Scaffold(msg),
   value: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> add(attribute.aria_valuetext(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.aria_valuetext(value))
+  }
 }

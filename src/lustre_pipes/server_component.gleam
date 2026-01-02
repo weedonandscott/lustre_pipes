@@ -39,22 +39,22 @@ pub fn script() -> Element(msg) {
 /// changed (by a clientside Lustre app, for example), the client runtime will
 /// destroy the current connection and set up a new one.
 ///
-pub fn route(
-  scaffold: element.Scaffold(msg),
-  path: String,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute("route", path)
+pub fn route(path: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute("route", path)
+  }
 }
 
 ///
 ///
 pub fn method(
-  scaffold: element.Scaffold(msg),
   value: server_component.TransportMethod,
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(server_component.method(value))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(server_component.method(value))
+  }
 }
 
 /// Properties of a JavaScript event object are typically not serialisable. This
@@ -87,10 +87,11 @@ pub fn method(
 /// ```
 ///
 pub fn include(
-  scaffold: element.Scaffold(msg),
   event: Attribute(msg),
   properties: List(String),
-) -> element.Scaffold(msg) {
-  scaffold
-  |> attribute.add(server_component.include(event, properties))
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> attribute.add(server_component.include(event, properties))
+  }
 }

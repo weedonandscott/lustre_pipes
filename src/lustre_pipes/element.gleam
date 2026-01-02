@@ -26,22 +26,24 @@ pub fn empty(scaffold: Scaffold(msg)) -> Element(msg) {
   element.element(scaffold.0, scaffold.1, [])
 }
 
-pub fn text_content(scaffold: Scaffold(msg), content: String) -> Element(msg) {
-  element.element(scaffold.0, scaffold.1, [element.text(content)])
+pub fn text_content(content: String) -> fn(Scaffold(msg)) -> Element(msg) {
+  fn(scaffold: Scaffold(msg)) {
+    element.element(scaffold.0, scaffold.1, [element.text(content)])
+  }
 }
 
 pub fn children(
-  scaffold: Scaffold(msg),
   children: List(Element(msg)),
-) -> Element(msg) {
-  element.element(scaffold.0, scaffold.1, children)
+) -> fn(Scaffold(msg)) -> Element(msg) {
+  fn(scaffold: Scaffold(msg)) {
+    element.element(scaffold.0, scaffold.1, children)
+  }
 }
 
 pub fn keyed(
-  scaffold: Scaffold(msg),
   pairs: List(#(String, Element(msg))),
-) -> Element(msg) {
-  keyed.element(scaffold.0, scaffold.1, pairs)
+) -> fn(Scaffold(msg)) -> Element(msg) {
+  fn(scaffold: Scaffold(msg)) { keyed.element(scaffold.0, scaffold.1, pairs) }
 }
 
 // PARITY FUNCTIONS ------------------------------------------------------------
