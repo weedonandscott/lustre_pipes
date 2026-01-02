@@ -48,6 +48,11 @@ pub fn keyed(
 
 // PARITY FUNCTIONS ------------------------------------------------------------
 
+/// A function for constructing elements in a specific XML namespace. This can
+/// be used to construct SVG or MathML elements, for example.
+///
+pub const namespaced = element.namespaced
+
 /// A function for constructing elements with more control over how the element
 /// is rendered when converted to a string. This is necessary because some HTML,
 /// SVG, and MathML elements are self-closing or void elements, and Lustre needs

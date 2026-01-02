@@ -2,6 +2,8 @@ import lustre/server_component
 import lustre_pipes/attribute.{type Attribute, attribute}
 import lustre_pipes/element.{type Element}
 
+// ELEMENTS --------------------------------------------------------------------
+
 /// Render the server component custom element. This element acts as the thin
 /// client runtime for a server component running remotely. There are a handful
 /// of attributes you should provide to configure the client runtime:
@@ -33,6 +35,8 @@ pub fn element() -> element.Scaffold(msg) {
 pub fn script() -> Element(msg) {
   server_component.script()
 }
+
+// ATTRIBUTES ------------------------------------------------------------------
 
 /// The `route` attribute tells the client runtime what route it should use to
 /// set up the WebSocket connection to the server. Whenever this attribute is
@@ -95,3 +99,113 @@ pub fn include(
     |> attribute.add(server_component.include(event, properties))
   }
 }
+
+// ACTIONS ---------------------------------------------------------------------
+
+@target(erlang)
+/// Recover the `Subject` of the server component runtime so that it can be used
+/// in supervision trees or passed to other processes. If you want to hand out
+/// different `Subject`s to send messages to your application, take a look at the
+/// [`select`](#select) effect.
+///
+/// > **Note**: this function is not available on the JavaScript target.
+///
+pub const subject = server_component.subject
+
+@target(erlang)
+/// Recover the `Pid` of the server component runtime so that it can be used in
+/// supervision trees or passed to other processes. If you want to hand out
+/// different `Subject`s to send messages to your application, take a look at the
+/// [`select`](#select) effect.
+///
+/// > **Note**: this function is not available on the JavaScript target.
+///
+pub const pid = server_component.pid
+
+/// Register a `Subject` to receive messages and updates from Lustre's server
+/// component runtime. The process that owns this will be monitored and the
+/// subject will be gracefully removed if the process dies.
+///
+/// > **Note**: if you are developing a server component for the JavaScript runtime,
+/// > you should use [`register_callback`](#register_callback) instead.
+///
+pub const register_subject = server_component.register_subject
+
+/// Deregister a `Subject` to stop receiving messages and updates from Lustre's
+/// server component runtime. The subject should first have been registered with
+/// [`register_subject`](#register_subject) otherwise this will do nothing.
+///
+pub const deregister_subject = server_component.deregister_subject
+
+/// Register a callback to be called whenever the server component runtime
+/// produces a message. Avoid using anonymous functions with this function, as
+/// they cannot later be removed using [`deregister_callback`](#deregister_callback).
+///
+/// > **Note**: server components running on the Erlang target are **strongly**
+/// > encouraged to use [`register_subject`](#register_subject) instead of this
+/// > function.
+///
+pub const register_callback = server_component.register_callback
+
+/// Deregister a callback to be called whenever the server component runtime
+/// produces a message. The callback to remove is determined by function equality
+/// and must be the same function that was passed to [`register_callback`](#register_callback).
+///
+/// > **Note**: server components running on the Erlang target are **strongly**
+/// > encouraged to use [`register_subject`](#register_subject) instead of this
+/// > function.
+///
+pub const deregister_callback = server_component.deregister_callback
+
+// EFFECTS ---------------------------------------------------------------------
+
+/// Instruct any connected clients to emit a DOM event with the given name and
+/// data. This lets your server component communicate to the frontend the same way
+/// any other HTML elements do: you might emit a `"change"` event when some part
+/// of the server component's state changes, for example.
+///
+/// This is a real DOM event and any JavaScript on the page can attach an event
+/// listener to the server component element and listen for these events.
+///
+pub const emit = server_component.emit
+
+/// On the Erlang target, Lustre's server component runtime is an OTP
+/// [actor](https://hexdocs.pm/gleam_otp/gleam/otp/actor.html) that can be
+/// communicated with using the standard process API and the `Subject` returned
+/// when starting the server component.
+///
+/// Sometimes, you might want to hand a different `Subject` to a process to restrict
+/// the type of messages it can send or to distinguish messages from different
+/// sources from one another. The `select` effect creates a fresh `Subject` each
+/// time it is run. By returning a `Selector` you can teach the Lustre server
+/// component runtime how to listen to messages from this `Subject`.
+///
+/// The `select` effect also gives you the dispatch function passed to `effect.from`.
+/// This is useful in case you want to store the provided `Subject` in your model
+/// for later use. For example you may subscribe to a pubsub service and later use
+/// that same `Subject` to unsubscribe.
+///
+/// > **Note**: This effect does nothing on the JavaScript runtime, where `Subject`s
+/// > and `Selector`s don't exist, and is the equivalent of returning `effect.none()`.
+///
+pub const select = server_component.select
+
+// DECODERS --------------------------------------------------------------------
+
+/// The server component client runtime sends JSON-encoded messages for the server
+/// runtime to execute. Because your own WebSocket server sits between the two
+/// parts of the runtime, you need to decode these actions and pass them to the
+/// server runtime yourself.
+///
+pub const runtime_message_decoder = server_component.runtime_message_decoder
+
+// ENCODERS --------------------------------------------------------------------
+
+/// Encode a message you can send to the client runtime to respond to. The server
+/// component runtime will send messages to any registered clients to instruct
+/// them to update their DOM or emit events, for example.
+///
+/// Because your WebSocket server sits between the two parts of the runtime, you
+/// need to encode these actions and send them to the client runtime yourself.
+///
+pub const client_message_to_json = server_component.client_message_to_json

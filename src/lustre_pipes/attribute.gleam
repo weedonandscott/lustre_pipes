@@ -611,6 +611,17 @@ pub fn writingsuggestions(
   }
 }
 
+// DETAILS ---------------------------------------------------------------------
+
+/// Indicates whether the details element is open or closed.
+///
+pub fn open(is_open: Bool) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.open(is_open))
+  }
+}
+
 // ANCHOR AND LINK ATTRIBUTES --------------------------------------------------
 
 /// Specifies the URL of a linked resource. This attribute can be used on various
@@ -713,6 +724,68 @@ pub fn referrerpolicy(
   fn(scaffold) {
     scaffold
     |> add(attribute.referrerpolicy(value))
+  }
+}
+
+/// Specifies the type of the resource being linked to, which is necessary for
+/// request matching, application of correct content security policy, and setting
+/// of correct Accept request header.
+///
+/// > **Note**: this attribute is required when rel="preload" has been set on the
+/// > `<link>` element, optional when `rel="modulepreload"` has been set, and
+/// > otherwise should not be used.
+///
+/// | Value      | Applies to                       |
+/// |------------|----------------------------------|
+/// | "audio"    | `<audio>`                        |
+/// | "document" | `<iframe>`, `<frame>`            |
+/// | "embed"    | `<embed>`                        |
+/// | "fetch"    | fetch, XHR                       |
+/// | "font"     | CSS @font-face                   |
+/// | "image"    | `<img>`, `<image>`, `<picture>`  |
+/// | "object"   | `<object>`                       |
+/// | "script"   | `<script>`, Worker importScripts |
+/// | "style"    | `<link rel="stylesheet">`        |
+/// | "video"    | `<video>`                        |
+/// | "worker"   | Worker, SharedWorker             |
+///
+pub fn as_(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.as_(value))
+  }
+}
+
+/// This attribute explicitly indicates that certain operations should be blocked
+/// until specific conditions are met. It must only be used when the rel attribute
+/// contains the expect or stylesheet keywords. With `rel="expect"`, it indicates
+/// that operations should be blocked until a specific DOM node has been parsed.
+/// With `rel="stylesheet"`, it indicates that operations should be blocked until
+/// an external stylesheet and its critical subresources have been fetched and
+/// applied to the document.
+///
+pub fn blocking(
+  value: Bool,
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.blocking(value))
+  }
+}
+
+/// Provides a base64-encoded hash of the resource being linked to. This is used
+/// by the browser to verify that a fetched resource has not been tampered with.
+///
+/// > **Note**: this attribute is only meaningful on `<link>` elements with either
+/// > `rel="stylesheet"`, `rel="preload"`, or `rel="modulepreload"`. It may also
+/// > be used on `<script>` elements.
+///
+pub fn integrity(
+  hash: String,
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.integrity(hash))
   }
 }
 
@@ -1034,6 +1107,24 @@ pub fn checked(
   fn(scaffold) {
     scaffold
     |> add(attribute.checked(is_checked))
+  }
+}
+
+/// Set the default checked state of a form control. This element will appear
+/// checked to users when the input is first rendered and its value will included in the form
+/// submission if the user does not change it.
+///
+/// Just setting a default value and letting the DOM manage the state of an input
+/// is known as using [_uncontrolled inputs_](https://github.com/lustre-labs/lustre/blob/main/pages/hints/controlled-vs-uncontrolled-inputs.md).
+/// Doing this means your application cannot set the value of an input after it
+/// is modified without using an effect.
+///
+pub fn default_checked(
+  is_checked: Bool,
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.default_checked(is_checked))
   }
 }
 
@@ -1455,6 +1546,25 @@ pub fn selected(
   }
 }
 
+/// An `<option>` with this attribute toggled on will be selected when
+/// its corresponding select is rendered for the first time. Only one
+/// option can be selected at a time, unless the [`"multiple"`](#multiple)
+/// attribute is set on the select element.
+///
+/// Just setting a default value and letting the DOM manage the state of an input
+/// is known as using [_uncontrolled inputs_](https://github.com/lustre-labs/lustre/blob/main/pages/hints/controlled-vs-uncontrolled-inputs.md).
+/// Doing this means your application cannot set the value of an input after it
+/// is modified without using an effect.
+///
+pub fn default_selected(
+  is_selected: Bool,
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.default_selected(is_selected))
+  }
+}
+
 /// Size of the control
 ///
 /// The following input types support the `size` attribute:
@@ -1503,7 +1613,13 @@ pub fn type_(
   }
 }
 
-/// Value of the form control
+/// Specifies the value of an input or form control. Using this attribute will
+/// make sure the value is always in sync with your application's modelled, a
+/// practice known as [_controlled inputs_](https://github.com/lustre-labs/lustre/blob/main/pages/hints/controlled-vs-uncontrolled-inputs.md).
+///
+/// If you'd like to let the DOM manage the value of an input but still set a
+/// default value for users to see, use the [`default_value`](#default_value)
+/// attribute instead.
 ///
 pub fn value(
   control_value: String,
@@ -1511,6 +1627,24 @@ pub fn value(
   fn(scaffold) {
     scaffold
     |> add(attribute.value(control_value))
+  }
+}
+
+/// Set the default value of an input or form control. This is the value that will
+/// be shown to users when the input is first rendered and included in the form
+/// submission if the user does not change it.
+///
+/// Just setting a default value and letting the DOM manage the state of an input
+/// is known as using [_uncontrolled inputs_](https://github.com/lustre-labs/lustre/blob/main/pages/hints/controlled-vs-uncontrolled-inputs.md).
+/// Doing this means your application cannot set the value of an input after it
+/// is modified without using an effect.
+///
+pub fn default_value(
+  control_value: String,
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.default_value(control_value))
   }
 }
 
@@ -1720,6 +1854,79 @@ pub fn shadowrootserializable(
   fn(scaffold) {
     scaffold
     |> add(attribute.shadowrootserializable(serializable))
+  }
+}
+
+// TABLE ATTRIBUTES ------------------------------------------------------------
+
+/// A short, abbreviated description of the header cell's content provided as an
+/// alternative label to use for the header cell when referencing the cell in other
+/// contexts. Some user-agents, such as speech readers, may present this description
+/// before the content itself.
+///
+pub fn abbr(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.abbr(value))
+  }
+}
+
+/// A non-negative integer value indicating how many columns the header cell spans
+/// or extends. The default value is `1`. User agents dismiss values higher than
+/// `1000` as incorrect, defaulting such values to `1`.
+///
+pub fn colspan(value: Int) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.colspan(value))
+  }
+}
+
+/// A list of space-separated strings corresponding to the id attributes of the
+/// `<th>` elements that provide the headers for this header cell.
+///
+pub fn headers(
+  ids: List(String),
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.headers(ids))
+  }
+}
+
+/// A non-negative integer value indicating how many rows the header cell spans
+/// or extends. The default value is `1`; if its value is set to `0`, the header
+/// cell will extends to the end of the table grouping section, that the `<th>`
+/// belongs to. Values higher than `65534` are clipped at `65534`.
+///
+pub fn rowspan(value: Int) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.rowspan(value))
+  }
+}
+
+/// Specifies the number of consecutive columns a `<colgroup>` element spans. The
+/// value must be a positive integer greater than zero.
+///
+pub fn span(value: Int) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.span(value))
+  }
+}
+
+/// The `scope` attribute specifies whether a header cell is a header for a row,
+/// column, or group of rows or columns. The following values are accepted:
+///
+/// The `scope` attribute is only valid on `<th>` elements.
+///
+pub fn scope(
+  value: String,
+) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> add(attribute.scope(value))
   }
 }
 
