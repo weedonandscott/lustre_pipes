@@ -1,7 +1,8 @@
 {
   description = "A Nix-flake-based Node.js development environment";
 
-  inputs.nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1.*.tar.gz";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
 
   outputs = { self, nixpkgs }:
     let
@@ -23,7 +24,7 @@
             gleam
 
             # Erlang
-            erlang_27
+            erlang_28
             rebar3
 
             # Node
