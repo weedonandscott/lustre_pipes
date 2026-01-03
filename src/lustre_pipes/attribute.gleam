@@ -1,6 +1,5 @@
 import lustre/attribute
-
-import lustre_pipes/element
+import lustre_pipes/internal/scaffold.{type Scaffold}
 
 // TYPES -----------------------------------------------------------------------
 
@@ -31,9 +30,10 @@ pub type Attribute(msg) =
 pub fn attribute(
   name: String,
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
-  fn(scaffold: element.Scaffold(msg)) {
-    #(scaffold.0, [attribute.attribute(name, value), ..scaffold.1])
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+  fn(scaffold: Scaffold(msg, last_attr)) {
+    scaffold
+    |> scaffold.attach_attribute(attribute.attribute(name, value))
   }
 }
 
@@ -48,9 +48,10 @@ pub fn attribute(
 pub fn property(
   name,
   value,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
-  fn(scaffold: element.Scaffold(msg)) {
-    #(scaffold.0, [attribute.property(name, value), ..scaffold.1])
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+  fn(scaffold: Scaffold(msg, last_attr)) {
+    scaffold
+    |> scaffold.attach_property(attribute.property(name, value))
   }
 }
 
@@ -58,15 +59,24 @@ pub fn property(
 /// calling [`element.to_string`](./element.html#to_string), but it is useful for
 /// _conditionally_ adding attributes to an element.
 ///
-pub fn none(scaffold: element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn none(scaffold: Scaffold(msg, last_attr)) -> Scaffold(msg, last_attr) {
   scaffold
 }
 
 /// If for some reason you already have an `Attribute` type, you can use this
 /// function to add it to the element
 ///
-pub fn add(scaffold: element.Scaffold(msg), attribute: Attribute(msg)) {
-  #(scaffold.0, [attribute, ..scaffold.1])
+pub fn add(
+  scaffold: Scaffold(msg, last_attr),
+  attribute: attribute.Attribute(msg),
+) -> Scaffold(msg, scaffold.Unknown) {
+  scaffold
+  |> scaffold.attach_unknown(attribute)
+}
+
+fn add_attribute(scaffold: Scaffold(msg, last_attr), attribute: Attribute(msg)) {
+  scaffold
+  |> scaffold.attach_attribute(attribute)
 }
 
 // GLOBAL ATTRIBUTES -----------------------------------------------------------
@@ -85,10 +95,10 @@ pub fn add(scaffold: element.Scaffold(msg), attribute: Attribute(msg)) {
 ///
 pub fn accesskey(
   key: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.accesskey(key))
+    |> add_attribute(attribute.accesskey(key))
   }
 }
 
@@ -123,10 +133,10 @@ pub fn accesskey(
 ///
 pub fn autocapitalize(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.autocapitalize(value))
+    |> add_attribute(attribute.autocapitalize(value))
   }
 }
 
@@ -138,10 +148,10 @@ pub fn autocapitalize(
 ///
 pub fn autocorrect(
   enabled: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.autocorrect(enabled))
+    |> add_attribute(attribute.autocorrect(enabled))
   }
 }
 
@@ -154,10 +164,10 @@ pub fn autocorrect(
 ///
 pub fn autofocus(
   should_autofocus: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.autofocus(should_autofocus))
+    |> add_attribute(attribute.autofocus(should_autofocus))
   }
 }
 
@@ -172,10 +182,12 @@ pub fn autofocus(
 /// > with any existing other classes on an element. Classes added _later_ in the
 /// > list will override classes added earlier.
 ///
-pub fn class(name: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn class(
+  name: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.class(name))
+    |> add_attribute(attribute.class(name))
   }
 }
 
@@ -190,10 +202,10 @@ pub fn class(name: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg)
 ///
 pub fn classes(
   names: List(#(String, Bool)),
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.classes(names))
+    |> add_attribute(attribute.classes(names))
   }
 }
 
@@ -212,10 +224,10 @@ pub fn classes(
 ///
 pub fn contenteditable(
   is_editable: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.contenteditable(is_editable))
+    |> add_attribute(attribute.contenteditable(is_editable))
   }
 }
 
@@ -227,10 +239,10 @@ pub fn contenteditable(
 pub fn data(
   key: String,
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.data(key, value))
+    |> add_attribute(attribute.data(key, value))
   }
 }
 
@@ -250,10 +262,10 @@ pub fn data(
 ///
 pub fn dir(
   direction: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.dir(direction))
+    |> add_attribute(attribute.dir(direction))
   }
 }
 
@@ -262,10 +274,10 @@ pub fn dir(
 ///
 pub fn draggable(
   is_draggable: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.draggable(is_draggable))
+    |> add_attribute(attribute.draggable(is_draggable))
   }
 }
 
@@ -289,10 +301,10 @@ pub fn draggable(
 ///
 pub fn enterkeyhint(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.enterkeyhint(value))
+    |> add_attribute(attribute.enterkeyhint(value))
   }
 }
 
@@ -304,10 +316,10 @@ pub fn enterkeyhint(
 ///
 pub fn hidden(
   is_hidden: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.hidden(is_hidden))
+    |> add_attribute(attribute.hidden(is_hidden))
   }
 }
 
@@ -316,10 +328,12 @@ pub fn hidden(
 /// `#id`, in JavaScript with `document.getElementById("id")`, or by anchors on
 /// the same page with the URL `"#id"`.
 ///
-pub fn id(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn id(
+  value: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.id(value))
+    |> add_attribute(attribute.id(value))
   }
 }
 
@@ -331,10 +345,10 @@ pub fn id(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
 ///
 pub fn inert(
   is_inert: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.inert(is_inert))
+    |> add_attribute(attribute.inert(is_inert))
   }
 }
 
@@ -357,20 +371,22 @@ pub fn inert(
 ///
 pub fn inputmode(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.inputmode(value))
+    |> add_attribute(attribute.inputmode(value))
   }
 }
 
 /// Specifies the [customised built-in element](https://html.spec.whatwg.org/#customized-built-in-element)
 /// to be used in place of the native element this attribute is applied to.
 ///
-pub fn is(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn is(
+  value: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.is(value))
+    |> add_attribute(attribute.is(value))
   }
 }
 
@@ -378,10 +394,12 @@ pub fn is(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
 /// specify the global unique identifier of an item, for example books that are
 /// identifiable by their ISBN.
 ///
-pub fn itemid(id: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn itemid(
+  id: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.itemid(id))
+    |> add_attribute(attribute.itemid(id))
   }
 }
 
@@ -391,10 +409,10 @@ pub fn itemid(id: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) 
 ///
 pub fn itemprop(
   name: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.itemprop(name))
+    |> add_attribute(attribute.itemprop(name))
   }
 }
 
@@ -404,10 +422,10 @@ pub fn itemprop(
 ///
 pub fn itemscope(
   has_scope: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.itemscope(has_scope))
+    |> add_attribute(attribute.itemscope(has_scope))
   }
 }
 
@@ -418,10 +436,10 @@ pub fn itemscope(
 ///
 pub fn itemtype(
   url: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.itemtype(url))
+    |> add_attribute(attribute.itemtype(url))
   }
 }
 
@@ -434,10 +452,10 @@ pub fn itemtype(
 ///
 pub fn lang(
   language: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.lang(language))
+    |> add_attribute(attribute.lang(language))
   }
 }
 
@@ -446,10 +464,10 @@ pub fn lang(
 ///
 pub fn nonce(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.nonce(value))
+    |> add_attribute(attribute.nonce(value))
   }
 }
 
@@ -476,10 +494,10 @@ pub fn nonce(
 ///
 pub fn popover(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.popover(value))
+    |> add_attribute(attribute.popover(value))
   }
 }
 
@@ -489,10 +507,10 @@ pub fn popover(
 ///
 pub fn spellcheck(
   should_check: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.spellcheck(should_check))
+    |> add_attribute(attribute.spellcheck(should_check))
   }
 }
 
@@ -507,10 +525,10 @@ pub fn spellcheck(
 pub fn style(
   property: String,
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.style(property, value))
+    |> add_attribute(attribute.style(property, value))
   }
 }
 
@@ -523,10 +541,10 @@ pub fn style(
 ///
 pub fn styles(
   properties: List(#(String, String)),
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.styles(properties))
+    |> add_attribute(attribute.styles(properties))
   }
 }
 
@@ -551,10 +569,10 @@ pub fn styles(
 ///
 pub fn tabindex(
   index: Int,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.tabindex(index))
+    |> add_attribute(attribute.tabindex(index))
   }
 }
 
@@ -566,10 +584,12 @@ pub fn tabindex(
 /// expose the `title` attribute to keyboard-only users or touch devices, for
 /// example.
 ///
-pub fn title(text: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn title(
+  text: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.title(text))
+    |> add_attribute(attribute.title(text))
   }
 }
 
@@ -593,10 +613,10 @@ pub fn title(text: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg)
 ///
 pub fn translate(
   should_translate: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.translate(should_translate))
+    |> add_attribute(attribute.translate(should_translate))
   }
 }
 
@@ -604,10 +624,10 @@ pub fn translate(
 ///
 pub fn writingsuggestions(
   enabled: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.writingsuggestions(enabled))
+    |> add_attribute(attribute.writingsuggestions(enabled))
   }
 }
 
@@ -615,10 +635,12 @@ pub fn writingsuggestions(
 
 /// Indicates whether the details element is open or closed.
 ///
-pub fn open(is_open: Bool) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn open(
+  is_open: Bool,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.open(is_open))
+    |> add_attribute(attribute.open(is_open))
   }
 }
 
@@ -627,10 +649,12 @@ pub fn open(is_open: Bool) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg)
 /// Specifies the URL of a linked resource. This attribute can be used on various
 /// elements to create hyperlinks or to load resources.
 ///
-pub fn href(url: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn href(
+  url: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.href(url))
+    |> add_attribute(attribute.href(url))
   }
 }
 
@@ -650,10 +674,10 @@ pub fn href(url: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
 ///
 pub fn target(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.target(value))
+    |> add_attribute(attribute.target(value))
   }
 }
 
@@ -662,10 +686,10 @@ pub fn target(
 ///
 pub fn download(
   filename: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.download(filename))
+    |> add_attribute(attribute.download(filename))
   }
 }
 
@@ -675,20 +699,22 @@ pub fn download(
 ///
 pub fn ping(
   urls: List(String),
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.ping(urls))
+    |> add_attribute(attribute.ping(urls))
   }
 }
 
 /// Specifies the relationship between the current document and the linked resource.
 /// Multiple relationship values can be provided as a space-separated list.
 ///
-pub fn rel(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn rel(
+  value: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.rel(value))
+    |> add_attribute(attribute.rel(value))
   }
 }
 
@@ -697,10 +723,10 @@ pub fn rel(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) 
 ///
 pub fn hreflang(
   language: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.hreflang(language))
+    |> add_attribute(attribute.hreflang(language))
   }
 }
 
@@ -720,10 +746,10 @@ pub fn hreflang(
 ///
 pub fn referrerpolicy(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.referrerpolicy(value))
+    |> add_attribute(attribute.referrerpolicy(value))
   }
 }
 
@@ -749,10 +775,12 @@ pub fn referrerpolicy(
 /// | "video"    | `<video>`                        |
 /// | "worker"   | Worker, SharedWorker             |
 ///
-pub fn as_(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn as_(
+  value: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.as_(value))
+    |> add_attribute(attribute.as_(value))
   }
 }
 
@@ -766,10 +794,10 @@ pub fn as_(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) 
 ///
 pub fn blocking(
   value: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.blocking(value))
+    |> add_attribute(attribute.blocking(value))
   }
 }
 
@@ -782,10 +810,10 @@ pub fn blocking(
 ///
 pub fn integrity(
   hash: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.integrity(hash))
+    |> add_attribute(attribute.integrity(hash))
   }
 }
 
@@ -795,19 +823,23 @@ pub fn integrity(
 /// This attribute is essential for accessibility, providing context about the
 /// image to users who cannot see it, including those using screen readers.
 ///
-pub fn alt(text: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn alt(
+  text: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.alt(text))
+    |> add_attribute(attribute.alt(text))
   }
 }
 
 /// Specifies the URL of an image or resource to be used.
 ///
-pub fn src(url: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn src(
+  url: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.src(url))
+    |> add_attribute(attribute.src(url))
   }
 }
 
@@ -817,10 +849,10 @@ pub fn src(url: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
 ///
 pub fn srcset(
   sources: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.srcset(sources))
+    |> add_attribute(attribute.srcset(sources))
   }
 }
 
@@ -829,10 +861,10 @@ pub fn srcset(
 ///
 pub fn sizes(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.sizes(value))
+    |> add_attribute(attribute.sizes(value))
   }
 }
 
@@ -841,10 +873,10 @@ pub fn sizes(
 ///
 pub fn crossorigin(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.crossorigin(value))
+    |> add_attribute(attribute.crossorigin(value))
   }
 }
 
@@ -852,38 +884,44 @@ pub fn crossorigin(
 ///
 pub fn usemap(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.usemap(value))
+    |> add_attribute(attribute.usemap(value))
   }
 }
 
 /// Indicates that the image is a server-side image map. When a user clicks on the
 /// image, the coordinates of the click are sent to the server.
 ///
-pub fn ismap(is_map: Bool) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn ismap(
+  is_map: Bool,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.ismap(is_map))
+    |> add_attribute(attribute.ismap(is_map))
   }
 }
 
 /// Specifies the width of the element in pixels.
 ///
-pub fn width(value: Int) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn width(
+  value: Int,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.width(value))
+    |> add_attribute(attribute.width(value))
   }
 }
 
 /// Specifies the height of the element in pixels.
 ///
-pub fn height(value: Int) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn height(
+  value: Int,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.height(value))
+    |> add_attribute(attribute.height(value))
   }
 }
 
@@ -892,10 +930,10 @@ pub fn height(value: Int) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) 
 ///
 pub fn decoding(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.decoding(value))
+    |> add_attribute(attribute.decoding(value))
   }
 }
 
@@ -904,10 +942,10 @@ pub fn decoding(
 ///
 pub fn loading(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.loading(value))
+    |> add_attribute(attribute.loading(value))
   }
 }
 
@@ -916,10 +954,10 @@ pub fn loading(
 ///
 pub fn fetchpriority(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.fetchpriority(value))
+    |> add_attribute(attribute.fetchpriority(value))
   }
 }
 
@@ -931,20 +969,22 @@ pub fn fetchpriority(
 ///
 pub fn accept_charset(
   charsets: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.accept_charset(charsets))
+    |> add_attribute(attribute.accept_charset(charsets))
   }
 }
 
 /// Specifies the URL to which the form's data should be sent when submitted.
 /// This can be overridden by formaction attributes on submit buttons.
 ///
-pub fn action(url: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn action(
+  url: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.action(url))
+    |> add_attribute(attribute.action(url))
   }
 }
 
@@ -959,10 +999,10 @@ pub fn action(url: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg)
 ///
 pub fn enctype(
   encoding_type: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.enctype(encoding_type))
+    |> add_attribute(attribute.enctype(encoding_type))
   }
 }
 
@@ -976,10 +1016,10 @@ pub fn enctype(
 ///
 pub fn method(
   http_method: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.method(http_method))
+    |> add_attribute(attribute.method(http_method))
   }
 }
 
@@ -988,10 +1028,10 @@ pub fn method(
 ///
 pub fn novalidate(
   disable_validation: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.novalidate(disable_validation))
+    |> add_attribute(attribute.novalidate(disable_validation))
   }
 }
 
@@ -1018,10 +1058,10 @@ pub fn novalidate(
 ///
 pub fn accept(
   values: List(String),
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.accept(values))
+    |> add_attribute(attribute.accept(values))
   }
 }
 
@@ -1034,10 +1074,10 @@ pub fn accept(
 ///
 pub fn alpha(
   allowed: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.alpha(allowed))
+    |> add_attribute(attribute.alpha(allowed))
   }
 }
 
@@ -1084,10 +1124,10 @@ pub fn alpha(
 ///
 pub fn autocomplete(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.autocomplete(value))
+    |> add_attribute(attribute.autocomplete(value))
   }
 }
 
@@ -1103,10 +1143,10 @@ pub fn autocomplete(
 ///
 pub fn checked(
   is_checked: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.checked(is_checked))
+    |> add_attribute(attribute.checked(is_checked))
   }
 }
 
@@ -1121,10 +1161,10 @@ pub fn checked(
 ///
 pub fn default_checked(
   is_checked: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.default_checked(is_checked))
+    |> add_attribute(attribute.default_checked(is_checked))
   }
 }
 
@@ -1145,10 +1185,10 @@ pub fn default_checked(
 ///
 pub fn colorspace(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.colorspace(value))
+    |> add_attribute(attribute.colorspace(value))
   }
 }
 
@@ -1168,10 +1208,10 @@ pub fn colorspace(
 ///
 pub fn dirname(
   direction: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.dirname(direction))
+    |> add_attribute(attribute.dirname(direction))
   }
 }
 
@@ -1180,28 +1220,32 @@ pub fn dirname(
 ///
 pub fn disabled(
   is_disabled: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.disabled(is_disabled))
+    |> add_attribute(attribute.disabled(is_disabled))
   }
 }
 
 ///
 ///
-pub fn for(id: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn for(
+  id: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.for(id))
+    |> add_attribute(attribute.for(id))
   }
 }
 
 /// Associates the input with a form element located elsewhere in the document.
 ///
-pub fn form(id: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn form(
+  id: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.form(id))
+    |> add_attribute(attribute.form(id))
   }
 }
 
@@ -1215,10 +1259,10 @@ pub fn form(id: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
 ///
 pub fn formaction(
   url: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.formaction(url))
+    |> add_attribute(attribute.formaction(url))
   }
 }
 
@@ -1229,10 +1273,10 @@ pub fn formaction(
 ///
 pub fn formenctype(
   encoding_type: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.formenctype(encoding_type))
+    |> add_attribute(attribute.formenctype(encoding_type))
   }
 }
 
@@ -1243,10 +1287,10 @@ pub fn formenctype(
 ///
 pub fn formmethod(
   method: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.formmethod(method))
+    |> add_attribute(attribute.formmethod(method))
   }
 }
 
@@ -1257,10 +1301,10 @@ pub fn formmethod(
 ///
 pub fn formnovalidate(
   no_validate: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.formnovalidate(no_validate))
+    |> add_attribute(attribute.formnovalidate(no_validate))
   }
 }
 
@@ -1271,10 +1315,10 @@ pub fn formnovalidate(
 ///
 pub fn formtarget(
   target: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.formtarget(target))
+    |> add_attribute(attribute.formtarget(target))
   }
 }
 
@@ -1296,10 +1340,12 @@ pub fn formtarget(
 /// - `"url"`
 /// - `"week"`
 ///
-pub fn list(id: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn list(
+  id: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.list(id))
+    |> add_attribute(attribute.list(id))
   }
 }
 
@@ -1317,10 +1363,12 @@ pub fn list(id: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
 /// - `"time"`
 /// - `"week"`
 ///
-pub fn max(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn max(
+  value: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.max(value))
+    |> add_attribute(attribute.max(value))
   }
 }
 
@@ -1337,10 +1385,10 @@ pub fn max(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) 
 ///
 pub fn maxlength(
   length: Int,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.maxlength(length))
+    |> add_attribute(attribute.maxlength(length))
   }
 }
 
@@ -1356,10 +1404,12 @@ pub fn maxlength(
 /// - `"time"`
 /// - `"week"`
 ///
-pub fn min(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn min(
+  value: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.min(value))
+    |> add_attribute(attribute.min(value))
   }
 }
 
@@ -1374,10 +1424,10 @@ pub fn min(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) 
 ///
 pub fn minlength(
   length: Int,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.minlength(length))
+    |> add_attribute(attribute.minlength(length))
   }
 }
 
@@ -1390,10 +1440,10 @@ pub fn minlength(
 ///
 pub fn multiple(
   allow_multiple: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.multiple(allow_multiple))
+    |> add_attribute(attribute.multiple(allow_multiple))
   }
 }
 
@@ -1401,10 +1451,10 @@ pub fn multiple(
 ///
 pub fn name(
   element_name: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.name(element_name))
+    |> add_attribute(attribute.name(element_name))
   }
 }
 
@@ -1419,10 +1469,10 @@ pub fn name(
 ///
 pub fn pattern(
   regex: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.pattern(regex))
+    |> add_attribute(attribute.pattern(regex))
   }
 }
 
@@ -1438,10 +1488,10 @@ pub fn pattern(
 ///
 pub fn placeholder(
   text: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.placeholder(text))
+    |> add_attribute(attribute.placeholder(text))
   }
 }
 
@@ -1456,10 +1506,10 @@ pub fn placeholder(
 ///
 pub fn popovertarget(
   id: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.popovertarget(id))
+    |> add_attribute(attribute.popovertarget(id))
   }
 }
 
@@ -1474,10 +1524,10 @@ pub fn popovertarget(
 ///
 pub fn popovertargetaction(
   action: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.popovertargetaction(action))
+    |> add_attribute(attribute.popovertargetaction(action))
   }
 }
 
@@ -1499,10 +1549,10 @@ pub fn popovertargetaction(
 ///
 pub fn readonly(
   is_readonly: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.readonly(is_readonly))
+    |> add_attribute(attribute.readonly(is_readonly))
   }
 }
 
@@ -1526,10 +1576,10 @@ pub fn readonly(
 ///
 pub fn required(
   is_required: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.required(is_required))
+    |> add_attribute(attribute.required(is_required))
   }
 }
 
@@ -1539,10 +1589,10 @@ pub fn required(
 ///
 pub fn selected(
   is_selected: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.selected(is_selected))
+    |> add_attribute(attribute.selected(is_selected))
   }
 }
 
@@ -1558,10 +1608,10 @@ pub fn selected(
 ///
 pub fn default_selected(
   is_selected: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.default_selected(is_selected))
+    |> add_attribute(attribute.default_selected(is_selected))
   }
 }
 
@@ -1576,10 +1626,12 @@ pub fn default_selected(
 /// - `"text"`
 /// - `"url"`
 ///
-pub fn size(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn size(
+  value: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.size(value))
+    |> add_attribute(attribute.size(value))
   }
 }
 
@@ -1595,10 +1647,12 @@ pub fn size(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg)
 /// - `"time"`
 /// - `"week"`
 ///
-pub fn step(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn step(
+  value: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.step(value))
+    |> add_attribute(attribute.step(value))
   }
 }
 
@@ -1606,10 +1660,10 @@ pub fn step(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg)
 ///
 pub fn type_(
   control_type: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.type_(control_type))
+    |> add_attribute(attribute.type_(control_type))
   }
 }
 
@@ -1623,10 +1677,10 @@ pub fn type_(
 ///
 pub fn value(
   control_value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.value(control_value))
+    |> add_attribute(attribute.value(control_value))
   }
 }
 
@@ -1641,10 +1695,10 @@ pub fn value(
 ///
 pub fn default_value(
   control_value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.default_value(control_value))
+    |> add_attribute(attribute.default_value(control_value))
   }
 }
 
@@ -1655,10 +1709,10 @@ pub fn default_value(
 ///
 pub fn http_equiv(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.http_equiv(value))
+    |> add_attribute(attribute.http_equiv(value))
   }
 }
 
@@ -1667,10 +1721,10 @@ pub fn http_equiv(
 ///
 pub fn content(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.content(value))
+    |> add_attribute(attribute.content(value))
   }
 }
 
@@ -1679,10 +1733,10 @@ pub fn content(
 ///
 pub fn charset(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.charset(value))
+    |> add_attribute(attribute.charset(value))
   }
 }
 
@@ -1691,10 +1745,10 @@ pub fn charset(
 ///
 pub fn media(
   query: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.media(query))
+    |> add_attribute(attribute.media(query))
   }
 }
 
@@ -1710,10 +1764,10 @@ pub fn media(
 ///
 pub fn autoplay(
   auto_play: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.autoplay(auto_play))
+    |> add_attribute(attribute.autoplay(auto_play))
   }
 }
 
@@ -1722,10 +1776,10 @@ pub fn autoplay(
 ///
 pub fn controls(
   show_controls: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.controls(show_controls))
+    |> add_attribute(attribute.controls(show_controls))
   }
 }
 
@@ -1734,10 +1788,10 @@ pub fn controls(
 ///
 pub fn loop(
   should_loop: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.loop(should_loop))
+    |> add_attribute(attribute.loop(should_loop))
   }
 }
 
@@ -1746,10 +1800,10 @@ pub fn loop(
 ///
 pub fn muted(
   is_muted: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.muted(is_muted))
+    |> add_attribute(attribute.muted(is_muted))
   }
 }
 
@@ -1762,20 +1816,22 @@ pub fn muted(
 ///
 pub fn playsinline(
   play_inline: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.playsinline(play_inline))
+    |> add_attribute(attribute.playsinline(play_inline))
   }
 }
 
 /// Specifies an image to be shown while the video is downloading, or until the
 /// user hits the play button.
 ///
-pub fn poster(url: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn poster(
+  url: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.poster(url))
+    |> add_attribute(attribute.poster(url))
   }
 }
 
@@ -1790,10 +1846,10 @@ pub fn poster(url: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg)
 ///
 pub fn preload(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.preload(value))
+    |> add_attribute(attribute.preload(value))
   }
 }
 
@@ -1814,10 +1870,10 @@ pub fn preload(
 ///
 pub fn shadowrootmode(
   mode: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.shadowrootmode(mode))
+    |> add_attribute(attribute.shadowrootmode(mode))
   }
 }
 
@@ -1826,10 +1882,10 @@ pub fn shadowrootmode(
 ///
 pub fn shadowrootdelegatesfocus(
   delegates: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.shadowrootdelegatesfocus(delegates))
+    |> add_attribute(attribute.shadowrootdelegatesfocus(delegates))
   }
 }
 
@@ -1838,10 +1894,10 @@ pub fn shadowrootdelegatesfocus(
 ///
 pub fn shadowrootclonable(
   clonable: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.shadowrootclonable(clonable))
+    |> add_attribute(attribute.shadowrootclonable(clonable))
   }
 }
 
@@ -1850,10 +1906,10 @@ pub fn shadowrootclonable(
 ///
 pub fn shadowrootserializable(
   serializable: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.shadowrootserializable(serializable))
+    |> add_attribute(attribute.shadowrootserializable(serializable))
   }
 }
 
@@ -1864,10 +1920,12 @@ pub fn shadowrootserializable(
 /// contexts. Some user-agents, such as speech readers, may present this description
 /// before the content itself.
 ///
-pub fn abbr(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn abbr(
+  value: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.abbr(value))
+    |> add_attribute(attribute.abbr(value))
   }
 }
 
@@ -1875,10 +1933,12 @@ pub fn abbr(value: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg)
 /// or extends. The default value is `1`. User agents dismiss values higher than
 /// `1000` as incorrect, defaulting such values to `1`.
 ///
-pub fn colspan(value: Int) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn colspan(
+  value: Int,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.colspan(value))
+    |> add_attribute(attribute.colspan(value))
   }
 }
 
@@ -1887,10 +1947,10 @@ pub fn colspan(value: Int) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg)
 ///
 pub fn headers(
   ids: List(String),
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.headers(ids))
+    |> add_attribute(attribute.headers(ids))
   }
 }
 
@@ -1899,20 +1959,24 @@ pub fn headers(
 /// cell will extends to the end of the table grouping section, that the `<th>`
 /// belongs to. Values higher than `65534` are clipped at `65534`.
 ///
-pub fn rowspan(value: Int) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn rowspan(
+  value: Int,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.rowspan(value))
+    |> add_attribute(attribute.rowspan(value))
   }
 }
 
 /// Specifies the number of consecutive columns a `<colgroup>` element spans. The
 /// value must be a positive integer greater than zero.
 ///
-pub fn span(value: Int) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn span(
+  value: Int,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.span(value))
+    |> add_attribute(attribute.span(value))
   }
 }
 
@@ -1923,10 +1987,10 @@ pub fn span(value: Int) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
 ///
 pub fn scope(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.scope(value))
+    |> add_attribute(attribute.scope(value))
   }
 }
 
@@ -1938,19 +2002,21 @@ pub fn scope(
 pub fn aria(
   name: String,
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria(name, value))
+    |> add_attribute(attribute.aria(name, value))
   }
 }
 
 ///
 ///
-pub fn role(name: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+pub fn role(
+  name: String,
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.role(name))
+    |> add_attribute(attribute.role(name))
   }
 }
 
@@ -1959,10 +2025,10 @@ pub fn role(name: String) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) 
 ///
 pub fn aria_activedescendant(
   id: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_activedescendant(id))
+    |> add_attribute(attribute.aria_activedescendant(id))
   }
 }
 
@@ -1973,10 +2039,10 @@ pub fn aria_activedescendant(
 ///
 pub fn aria_atomic(
   value: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_atomic(value))
+    |> add_attribute(attribute.aria_atomic(value))
   }
 }
 
@@ -1987,10 +2053,10 @@ pub fn aria_atomic(
 ///
 pub fn aria_autocomplete(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_autocomplete(value))
+    |> add_attribute(attribute.aria_autocomplete(value))
   }
 }
 
@@ -1999,10 +2065,10 @@ pub fn aria_autocomplete(
 ///
 pub fn aria_braillelabel(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_braillelabel(value))
+    |> add_attribute(attribute.aria_braillelabel(value))
   }
 }
 
@@ -2012,10 +2078,10 @@ pub fn aria_braillelabel(
 ///
 pub fn aria_brailleroledescription(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_brailleroledescription(value))
+    |> add_attribute(attribute.aria_brailleroledescription(value))
   }
 }
 
@@ -2025,10 +2091,10 @@ pub fn aria_brailleroledescription(
 ///
 pub fn aria_busy(
   value: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_busy(value))
+    |> add_attribute(attribute.aria_busy(value))
   }
 }
 
@@ -2037,10 +2103,10 @@ pub fn aria_busy(
 ///
 pub fn aria_checked(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_checked(value))
+    |> add_attribute(attribute.aria_checked(value))
   }
 }
 
@@ -2049,10 +2115,10 @@ pub fn aria_checked(
 ///
 pub fn aria_colcount(
   value: Int,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_colcount(value))
+    |> add_attribute(attribute.aria_colcount(value))
   }
 }
 
@@ -2061,10 +2127,10 @@ pub fn aria_colcount(
 ///
 pub fn aria_colindex(
   value: Int,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_colindex(value))
+    |> add_attribute(attribute.aria_colindex(value))
   }
 }
 
@@ -2073,10 +2139,10 @@ pub fn aria_colindex(
 ///
 pub fn aria_colindextext(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_colindextext(value))
+    |> add_attribute(attribute.aria_colindextext(value))
   }
 }
 
@@ -2085,10 +2151,10 @@ pub fn aria_colindextext(
 ///
 pub fn aria_colspan(
   value: Int,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_colspan(value))
+    |> add_attribute(attribute.aria_colspan(value))
   }
 }
 
@@ -2098,10 +2164,10 @@ pub fn aria_colspan(
 ///
 pub fn aria_controls(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_controls(value))
+    |> add_attribute(attribute.aria_controls(value))
   }
 }
 
@@ -2110,10 +2176,10 @@ pub fn aria_controls(
 ///
 pub fn aria_current(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_current(value))
+    |> add_attribute(attribute.aria_current(value))
   }
 }
 
@@ -2122,10 +2188,10 @@ pub fn aria_current(
 ///
 pub fn aria_describedby(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_describedby(value))
+    |> add_attribute(attribute.aria_describedby(value))
   }
 }
 
@@ -2134,10 +2200,10 @@ pub fn aria_describedby(
 ///
 pub fn aria_description(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_description(value))
+    |> add_attribute(attribute.aria_description(value))
   }
 }
 
@@ -2146,10 +2212,10 @@ pub fn aria_description(
 ///
 pub fn aria_details(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_details(value))
+    |> add_attribute(attribute.aria_details(value))
   }
 }
 
@@ -2158,10 +2224,10 @@ pub fn aria_details(
 ///
 pub fn aria_disabled(
   value: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_disabled(value))
+    |> add_attribute(attribute.aria_disabled(value))
   }
 }
 
@@ -2170,10 +2236,10 @@ pub fn aria_disabled(
 ///
 pub fn aria_errormessage(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_errormessage(value))
+    |> add_attribute(attribute.aria_errormessage(value))
   }
 }
 
@@ -2183,10 +2249,10 @@ pub fn aria_errormessage(
 ///
 pub fn aria_expanded(
   value: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_expanded(value))
+    |> add_attribute(attribute.aria_expanded(value))
   }
 }
 
@@ -2197,10 +2263,10 @@ pub fn aria_expanded(
 ///
 pub fn aria_flowto(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_flowto(value))
+    |> add_attribute(attribute.aria_flowto(value))
   }
 }
 
@@ -2210,10 +2276,10 @@ pub fn aria_flowto(
 ///
 pub fn aria_haspopup(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_haspopup(value))
+    |> add_attribute(attribute.aria_haspopup(value))
   }
 }
 
@@ -2222,10 +2288,10 @@ pub fn aria_haspopup(
 ///
 pub fn aria_hidden(
   value: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_hidden(value))
+    |> add_attribute(attribute.aria_hidden(value))
   }
 }
 
@@ -2234,10 +2300,10 @@ pub fn aria_hidden(
 ///
 pub fn aria_invalid(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_invalid(value))
+    |> add_attribute(attribute.aria_invalid(value))
   }
 }
 
@@ -2246,10 +2312,10 @@ pub fn aria_invalid(
 ///
 pub fn aria_keyshortcuts(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_keyshortcuts(value))
+    |> add_attribute(attribute.aria_keyshortcuts(value))
   }
 }
 
@@ -2258,10 +2324,10 @@ pub fn aria_keyshortcuts(
 ///
 pub fn aria_label(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_label(value))
+    |> add_attribute(attribute.aria_label(value))
   }
 }
 
@@ -2270,10 +2336,10 @@ pub fn aria_label(
 ///
 pub fn aria_labelledby(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_labelledby(value))
+    |> add_attribute(attribute.aria_labelledby(value))
   }
 }
 
@@ -2282,10 +2348,10 @@ pub fn aria_labelledby(
 ///
 pub fn aria_level(
   value: Int,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_level(value))
+    |> add_attribute(attribute.aria_level(value))
   }
 }
 
@@ -2295,10 +2361,10 @@ pub fn aria_level(
 ///
 pub fn aria_live(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_live(value))
+    |> add_attribute(attribute.aria_live(value))
   }
 }
 
@@ -2306,10 +2372,10 @@ pub fn aria_live(
 ///
 pub fn aria_modal(
   value: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_modal(value))
+    |> add_attribute(attribute.aria_modal(value))
   }
 }
 
@@ -2318,10 +2384,10 @@ pub fn aria_modal(
 ///
 pub fn aria_multiline(
   value: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_multiline(value))
+    |> add_attribute(attribute.aria_multiline(value))
   }
 }
 
@@ -2330,10 +2396,10 @@ pub fn aria_multiline(
 ///
 pub fn aria_multiselectable(
   value: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_multiselectable(value))
+    |> add_attribute(attribute.aria_multiselectable(value))
   }
 }
 
@@ -2342,10 +2408,10 @@ pub fn aria_multiselectable(
 ///
 pub fn aria_orientation(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_orientation(value))
+    |> add_attribute(attribute.aria_orientation(value))
   }
 }
 
@@ -2355,10 +2421,10 @@ pub fn aria_orientation(
 ///
 pub fn aria_owns(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_owns(value))
+    |> add_attribute(attribute.aria_owns(value))
   }
 }
 
@@ -2368,10 +2434,10 @@ pub fn aria_owns(
 ///
 pub fn aria_placeholder(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_placeholder(value))
+    |> add_attribute(attribute.aria_placeholder(value))
   }
 }
 
@@ -2381,10 +2447,10 @@ pub fn aria_placeholder(
 ///
 pub fn aria_posinset(
   value: Int,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_posinset(value))
+    |> add_attribute(attribute.aria_posinset(value))
   }
 }
 
@@ -2393,10 +2459,10 @@ pub fn aria_posinset(
 ///
 pub fn aria_pressed(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_pressed(value))
+    |> add_attribute(attribute.aria_pressed(value))
   }
 }
 
@@ -2405,10 +2471,10 @@ pub fn aria_pressed(
 ///
 pub fn aria_readonly(
   value: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_readonly(value))
+    |> add_attribute(attribute.aria_readonly(value))
   }
 }
 
@@ -2418,10 +2484,10 @@ pub fn aria_readonly(
 ///
 pub fn aria_relevant(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_relevant(value))
+    |> add_attribute(attribute.aria_relevant(value))
   }
 }
 
@@ -2430,10 +2496,10 @@ pub fn aria_relevant(
 ///
 pub fn aria_required(
   value: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_required(value))
+    |> add_attribute(attribute.aria_required(value))
   }
 }
 
@@ -2442,10 +2508,10 @@ pub fn aria_required(
 ///
 pub fn aria_roledescription(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_roledescription(value))
+    |> add_attribute(attribute.aria_roledescription(value))
   }
 }
 
@@ -2454,10 +2520,10 @@ pub fn aria_roledescription(
 ///
 pub fn aria_rowcount(
   value: Int,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_rowcount(value))
+    |> add_attribute(attribute.aria_rowcount(value))
   }
 }
 
@@ -2466,10 +2532,10 @@ pub fn aria_rowcount(
 ///
 pub fn aria_rowindex(
   value: Int,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_rowindex(value))
+    |> add_attribute(attribute.aria_rowindex(value))
   }
 }
 
@@ -2478,10 +2544,10 @@ pub fn aria_rowindex(
 ///
 pub fn aria_rowindextext(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_rowindextext(value))
+    |> add_attribute(attribute.aria_rowindextext(value))
   }
 }
 
@@ -2490,10 +2556,10 @@ pub fn aria_rowindextext(
 ///
 pub fn aria_rowspan(
   value: Int,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_rowspan(value))
+    |> add_attribute(attribute.aria_rowspan(value))
   }
 }
 
@@ -2502,10 +2568,10 @@ pub fn aria_rowspan(
 ///
 pub fn aria_selected(
   value: Bool,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_selected(value))
+    |> add_attribute(attribute.aria_selected(value))
   }
 }
 
@@ -2514,10 +2580,10 @@ pub fn aria_selected(
 ///
 pub fn aria_setsize(
   value: Int,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_setsize(value))
+    |> add_attribute(attribute.aria_setsize(value))
   }
 }
 
@@ -2526,10 +2592,10 @@ pub fn aria_setsize(
 ///
 pub fn aria_sort(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_sort(value))
+    |> add_attribute(attribute.aria_sort(value))
   }
 }
 
@@ -2538,10 +2604,10 @@ pub fn aria_sort(
 ///
 pub fn aria_valuemax(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_valuemax(value))
+    |> add_attribute(attribute.aria_valuemax(value))
   }
 }
 
@@ -2550,10 +2616,10 @@ pub fn aria_valuemax(
 ///
 pub fn aria_valuemin(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_valuemin(value))
+    |> add_attribute(attribute.aria_valuemin(value))
   }
 }
 
@@ -2561,10 +2627,10 @@ pub fn aria_valuemin(
 ///
 pub fn aria_valuenow(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_valuenow(value))
+    |> add_attribute(attribute.aria_valuenow(value))
   }
 }
 
@@ -2573,9 +2639,9 @@ pub fn aria_valuenow(
 ///
 pub fn aria_valuetext(
   value: String,
-) -> fn(element.Scaffold(msg)) -> element.Scaffold(msg) {
+) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
   fn(scaffold) {
     scaffold
-    |> add(attribute.aria_valuetext(value))
+    |> add_attribute(attribute.aria_valuetext(value))
   }
 }

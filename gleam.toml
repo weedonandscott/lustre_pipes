@@ -7,6 +7,8 @@ description = "Write Lustre template using Gleam's pipes"
 licences = ["MIT"]
 repository = { type = "github", user = "weedonandscott", repo = "lustre_pipes" }
 
+internal_modules = ["lustre_pipes/internal/*"]
+
 [dependencies]
 gleam_stdlib = ">= 0.34.0 and < 2.0.0"
 lustre = ">= 5.3.4 and < 6.0.0"

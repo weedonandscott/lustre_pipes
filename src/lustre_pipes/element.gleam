@@ -1,81 +1,48 @@
-import lustre/attribute.{type Attribute}
 import lustre/element
-import lustre/element/keyed
+
+import lustre_pipes/internal/scaffold
 
 // TYPES -----------------------------------------------------------------------
 
 pub type Element(msg) =
   element.Element(msg)
 
-@internal
-pub type ElementId {
-  Regular(String)
-  Namespaced(namespace: String, tag: String)
-}
-
-@internal
-pub type Scaffold(msg) =
-  #(ElementId, List(Attribute(msg)))
-
-@internal
-pub type ChildlessScaffold(msg) =
-  Scaffold(msg)
-
-@internal
-pub type TextContentScaffold(msg) =
-  Scaffold(msg)
+pub type Scaffold(msg, last_attr) =
+  scaffold.Scaffold(msg, last_attr)
 
 // CUSTOM FUNCTIONS ------------------------------------------------------------
 
-pub fn element(tag: String) -> Scaffold(msg) {
-  #(Regular(tag), [])
+pub fn element(tag: String) -> Scaffold(msg, scaffold.NoAttrs) {
+  scaffold.regular(tag)
 }
 
-pub fn namespaced(namespace: String, tag: String) -> Scaffold(msg) {
-  #(Namespaced(namespace:, tag:), [])
+pub fn namespaced(
+  namespace: String,
+  tag: String,
+) -> Scaffold(msg, scaffold.NoAttrs) {
+  scaffold.namespaced(namespace:, tag:)
 }
 
-pub fn empty(scaffold: Scaffold(msg)) -> Element(msg) {
-  case scaffold.0 {
-    Namespaced(namespace:, tag:) ->
-      element.namespaced(namespace, tag, scaffold.1, [])
-    Regular(tag) -> element.element(tag, scaffold.1, [])
-  }
+pub fn empty(scaffold: Scaffold(msg, last_attr)) -> Element(msg) {
+  scaffold |> scaffold.to_element([])
 }
 
-pub fn text_content(content: String) -> fn(Scaffold(msg)) -> Element(msg) {
-  let children = [element.text(content)]
-  fn(scaffold: Scaffold(msg)) {
-    case scaffold.0 {
-      Namespaced(namespace:, tag:) ->
-        element.namespaced(namespace, tag, scaffold.1, children)
-      Regular(tag) -> element.element(tag, scaffold.1, children)
-    }
-  }
+pub fn text_content(
+  content: String,
+) -> fn(Scaffold(msg, last_attr)) -> Element(msg) {
+  fn(scaffold) { scaffold |> scaffold.to_element([element.text(content)]) }
 }
 
 pub fn children(
   children: List(Element(msg)),
-) -> fn(Scaffold(msg)) -> Element(msg) {
-  fn(scaffold: Scaffold(msg)) {
-    case scaffold.0 {
-      Namespaced(namespace:, tag:) ->
-        element.namespaced(namespace, tag, scaffold.1, children)
-      Regular(tag) -> element.element(tag, scaffold.1, children)
-    }
-  }
+) -> fn(Scaffold(msg, last_attr)) -> Element(msg) {
+  fn(scaffold) { scaffold |> scaffold.to_element(children) }
 }
 
 pub fn keyed(
   pairs: List(#(String, Element(msg))),
-) -> fn(Scaffold(msg)) -> Element(msg) {
-  fn(scaffold: Scaffold(msg)) {
-    case scaffold.0 {
-      Namespaced(namespace:, tag:) ->
-        keyed.namespaced(namespace, tag, scaffold.1, pairs)
-      Regular(tag) -> keyed.element(tag, scaffold.1, pairs)
-    }
-  }
+) -> fn(Scaffold(msg, last_attr)) -> Element(msg) {
+  fn(scaffold) { scaffold |> scaffold.to_keyed_element(pairs) }
 }
 
 // PARITY FUNCTIONS ------------------------------------------------------------
