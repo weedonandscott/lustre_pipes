@@ -29,6 +29,11 @@ pub opaque type Scaffold(msg) {
     attrs: List(attribute.Attribute(msg)),
     namespace: String,
   )
+  Custom(
+    builder: fn(List(attribute.Attribute(msg)), List(element.Element(msg))) ->
+      element.Element(msg),
+    attrs: List(attribute.Attribute(msg)),
+  )
 }
 
 @internal
@@ -46,12 +51,30 @@ pub fn regular(tag: String) -> Scaffold(msg) {
   Regular(tag:, attrs: [])
 }
 
-// pub fn from(
-//   builder_fn: fn(List(attribute.Attribute), List(element.Element)) ->
-//     element.Element,
-// ) -> Scaffold(msg) {
-//   Regular(tag:, attrs: [])
-// }
+@internal
+pub fn from(
+  builder: fn(List(attribute.Attribute(msg)), List(element.Element(msg))) ->
+    element.Element(msg),
+) -> Scaffold(msg) {
+  Custom(builder, [])
+}
+
+@internal
+pub fn intercept(
+  scaffold: Scaffold(msg),
+  builder: fn(
+    String,
+    List(attribute.Attribute(msg)),
+    List(element.Element(msg)),
+  ) ->
+    element.Element(msg),
+) -> Scaffold(msg) {
+  case scaffold {
+    Regular(tag:, attrs:) | Namespaced(tag:, attrs:, ..) ->
+      Custom(fn(attrs, children) { builder(tag, attrs, children) }, attrs)
+    Custom(..) -> scaffold
+  }
+}
 
 @internal
 pub fn namespaced(namespace namespace: String, tag tag: String) -> Scaffold(msg) {
@@ -65,6 +88,7 @@ pub fn to_element(scaffold: Scaffold(msg), children: List(element.Element(msg)))
     Namespaced(namespace:, tag:, attrs:) ->
       element.namespaced(namespace, tag, attrs, children)
     Regular(tag:, attrs:) -> element.element(tag, attrs, children)
+    Custom(builder:, attrs:) -> builder(attrs, children)
   }
 }
 
@@ -76,6 +100,7 @@ pub fn to_keyed_element(
     Namespaced(namespace:, tag:, attrs:) ->
       keyed.namespaced(namespace, tag, attrs, pairs)
     Regular(tag:, attrs:) -> keyed.element(tag, attrs, pairs)
+    Custom(builder:, attrs:) -> builder(attrs, [keyed.fragment(pairs)])
   }
 }
 
@@ -91,6 +116,7 @@ pub fn attach_attribute(
       Regular(..regular, attrs: [event, ..attrs])
     Namespaced(attrs:, ..) as namespaced ->
       Namespaced(..namespaced, attrs: [event, ..attrs])
+    Custom(attrs:, ..) as custom -> Custom(..custom, attrs: [event, ..attrs])
   }
 }
 
@@ -102,8 +128,10 @@ pub fn modify_latest_attr(
   case scaffold {
     Regular(attrs: [latest_attr, ..] as attrs, ..) as regular ->
       Regular(..regular, attrs: [modifier(latest_attr), ..attrs])
-    Namespaced(attrs: [latest_attr, ..] as attrs, ..) as regular ->
-      Namespaced(..regular, attrs: [modifier(latest_attr), ..attrs])
+    Namespaced(attrs: [latest_attr, ..] as attrs, ..) as namespaced ->
+      Namespaced(..namespaced, attrs: [modifier(latest_attr), ..attrs])
+    Custom(attrs: [latest_attr, ..] as attrs, ..) as custom ->
+      Custom(..custom, attrs: [modifier(latest_attr), ..attrs])
     _ -> scaffold
   }
 }
@@ -119,8 +147,13 @@ pub fn modify_latest_attr_with_many(
         list.fold(modifiers, latest_attr, fn(a, modifier) { modifier(a) }),
         ..attrs
       ])
-    Namespaced(attrs: [latest_attr, ..] as attrs, ..) as regular ->
-      Namespaced(..regular, attrs: [
+    Namespaced(attrs: [latest_attr, ..] as attrs, ..) as namespaced ->
+      Namespaced(..namespaced, attrs: [
+        list.fold(modifiers, latest_attr, fn(a, modifier) { modifier(a) }),
+        ..attrs
+      ])
+    Custom(attrs: [latest_attr, ..] as attrs, ..) as custom ->
+      Custom(..custom, attrs: [
         list.fold(modifiers, latest_attr, fn(a, modifier) { modifier(a) }),
         ..attrs
       ])

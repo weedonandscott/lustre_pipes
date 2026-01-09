@@ -20,6 +20,14 @@ pub fn namespaced(namespace: String, tag: String) -> Scaffold(msg) {
   scaffold.namespaced(namespace:, tag:)
 }
 
+pub fn from(builder) -> Scaffold(msg) {
+  scaffold.from(builder)
+}
+
+pub fn intercept(scaffold, builder) -> Scaffold(msg) {
+  scaffold.intercept(scaffold, builder)
+}
+
 pub fn empty(scaffold: Scaffold(msg)) -> Element(msg) {
   scaffold |> scaffold.to_element([])
 }
