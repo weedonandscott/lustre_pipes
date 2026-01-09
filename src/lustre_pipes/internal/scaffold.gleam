@@ -138,9 +138,9 @@ pub fn modify_latest_attr(
   modifier: fn(attribute.Attribute(msg)) -> attribute.Attribute(msg),
 ) -> Scaffold(msg, last_attr) {
   case scaffold {
-    Regular(attrs: [latest_attr] as attrs, ..) as regular ->
+    Regular(attrs: [latest_attr, ..] as attrs, ..) as regular ->
       Regular(..regular, attrs: [modifier(latest_attr), ..attrs])
-    Namespaced(attrs: [latest_attr] as attrs, ..) as regular ->
+    Namespaced(attrs: [latest_attr, ..] as attrs, ..) as regular ->
       Namespaced(..regular, attrs: [modifier(latest_attr), ..attrs])
     _ -> scaffold
   }
@@ -152,12 +152,12 @@ pub fn modify_latest_attr_with_many(
   modifiers: List(fn(attribute.Attribute(msg)) -> attribute.Attribute(msg)),
 ) -> Scaffold(msg, last_attr) {
   case scaffold {
-    Regular(attrs: [latest_attr] as attrs, ..) as regular ->
+    Regular(attrs: [latest_attr, ..] as attrs, ..) as regular ->
       Regular(..regular, attrs: [
         list.fold(modifiers, latest_attr, fn(a, modifier) { modifier(a) }),
         ..attrs
       ])
-    Namespaced(attrs: [latest_attr] as attrs, ..) as regular ->
+    Namespaced(attrs: [latest_attr, ..] as attrs, ..) as regular ->
       Namespaced(..regular, attrs: [
         list.fold(modifiers, latest_attr, fn(a, modifier) { modifier(a) }),
         ..attrs
