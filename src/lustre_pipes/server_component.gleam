@@ -25,7 +25,7 @@ import lustre_pipes/internal/scaffold.{type Scaffold}
 /// > JavaScript bundle found in Lustre's `priv/static` directory or by inlining
 /// > the script source directly with the [`script`](#script) element below.
 ///
-pub fn element() -> Scaffold(msg, scaffold.NoAttrs) {
+pub fn element() -> Scaffold(msg) {
   scaffold.regular("lustre-server-component")
 }
 
@@ -45,9 +45,7 @@ pub fn script() -> Element(msg) {
 /// changed (by a clientside Lustre app, for example), the client runtime will
 /// destroy the current connection and set up a new one.
 ///
-pub fn route(
-  path: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn route(path: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> attribute("route", path)
@@ -58,7 +56,7 @@ pub fn route(
 ///
 pub fn method(
   value: server_component.TransportMethod,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Unknown) {
+) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> attribute.add(server_component.method(value))
@@ -97,7 +95,7 @@ pub fn method(
 pub fn include(
   event: Attribute(msg),
   properties: List(String),
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Unknown) {
+) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> attribute.add(server_component.include(event, properties))

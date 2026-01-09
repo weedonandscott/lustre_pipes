@@ -30,8 +30,8 @@ pub type Attribute(msg) =
 pub fn attribute(
   name: String,
   value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
-  fn(scaffold: Scaffold(msg, last_attr)) {
+) -> fn(Scaffold(msg)) -> Scaffold(msg) {
+  fn(scaffold: Scaffold(msg)) {
     scaffold
     |> scaffold.attach_attribute(attribute.attribute(name, value))
   }
@@ -45,13 +45,10 @@ pub fn attribute(
 /// > can read more about the implications of this
 /// > [here](https://github.com/lustre-labs/lustre/blob/main/pages/hints/attributes-vs-properties.md).
 ///
-pub fn property(
-  name,
-  value,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
-  fn(scaffold: Scaffold(msg, last_attr)) {
+pub fn property(name, value) -> fn(Scaffold(msg)) -> Scaffold(msg) {
+  fn(scaffold) {
     scaffold
-    |> scaffold.attach_property(attribute.property(name, value))
+    |> scaffold.attach_attribute(attribute.property(name, value))
   }
 }
 
@@ -59,7 +56,7 @@ pub fn property(
 /// calling [`element.to_string`](./element.html#to_string), but it is useful for
 /// _conditionally_ adding attributes to an element.
 ///
-pub fn none(scaffold: Scaffold(msg, last_attr)) -> Scaffold(msg, last_attr) {
+pub fn none(scaffold: Scaffold(msg)) -> Scaffold(msg) {
   scaffold
 }
 
@@ -67,14 +64,14 @@ pub fn none(scaffold: Scaffold(msg, last_attr)) -> Scaffold(msg, last_attr) {
 /// function to add it to the element
 ///
 pub fn add(
-  scaffold: Scaffold(msg, last_attr),
+  scaffold: Scaffold(msg),
   attribute: attribute.Attribute(msg),
-) -> Scaffold(msg, scaffold.Unknown) {
+) -> Scaffold(msg) {
   scaffold
-  |> scaffold.attach_unknown(attribute)
+  |> scaffold.attach_attribute(attribute)
 }
 
-fn add_attribute(scaffold: Scaffold(msg, last_attr), attribute: Attribute(msg)) {
+fn add_attribute(scaffold: Scaffold(msg), attribute: Attribute(msg)) {
   scaffold
   |> scaffold.attach_attribute(attribute)
 }
@@ -93,9 +90,7 @@ fn add_attribute(scaffold: Scaffold(msg, last_attr), attribute: Attribute(msg)) 
 /// | Chrome  | Alt + key         | Ctrl + Option + key | Ctrl + Option + key |
 /// | Safari  |                   |                     | Ctrl + Option + key |
 ///
-pub fn accesskey(
-  key: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn accesskey(key: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.accesskey(key))
@@ -131,9 +126,7 @@ pub fn accesskey(
 ///
 /// - **characters**: All letters should default to uppercase.
 ///
-pub fn autocapitalize(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn autocapitalize(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.autocapitalize(value))
@@ -146,9 +139,7 @@ pub fn autocapitalize(
 ///
 /// When disabled the user agent is **never** allowed to correct spelling.
 ///
-pub fn autocorrect(
-  enabled: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn autocorrect(enabled: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.autocorrect(enabled))
@@ -162,9 +153,7 @@ pub fn autocorrect(
 /// > Whenever it is toggled true, the element will be automatically focused even
 /// > if it already exists in the DOM.
 ///
-pub fn autofocus(
-  should_autofocus: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn autofocus(should_autofocus: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.autofocus(should_autofocus))
@@ -182,9 +171,7 @@ pub fn autofocus(
 /// > with any existing other classes on an element. Classes added _later_ in the
 /// > list will override classes added earlier.
 ///
-pub fn class(
-  name: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn class(name: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.class(name))
@@ -202,7 +189,7 @@ pub fn class(
 ///
 pub fn classes(
   names: List(#(String, Bool)),
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.classes(names))
@@ -224,7 +211,7 @@ pub fn classes(
 ///
 pub fn contenteditable(
   is_editable: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.contenteditable(is_editable))
@@ -236,10 +223,7 @@ pub fn contenteditable(
 /// path `element.dataset.key` where `key` is the key you provide to this
 /// function.
 ///
-pub fn data(
-  key: String,
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn data(key: String, value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.data(key, value))
@@ -260,9 +244,7 @@ pub fn data(
 /// > browsers is naive and only considers the first character available that
 /// > indicates the direction.
 ///
-pub fn dir(
-  direction: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn dir(direction: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.dir(direction))
@@ -272,9 +254,7 @@ pub fn dir(
 /// Indicates whether the element can be dragged as part of the HTML drag-and-drop
 /// API.
 ///
-pub fn draggable(
-  is_draggable: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn draggable(is_draggable: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.draggable(is_draggable))
@@ -299,9 +279,7 @@ pub fn draggable(
 /// by user agents. When unspecified or invalid, the user agent may use contextual
 /// information such as the type of an input to determine the label.
 ///
-pub fn enterkeyhint(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn enterkeyhint(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.enterkeyhint(value))
@@ -314,9 +292,7 @@ pub fn enterkeyhint(
 /// presentation purposes, but it can be useful for example to render something
 /// that may be made visible later.
 ///
-pub fn hidden(
-  is_hidden: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn hidden(is_hidden: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.hidden(is_hidden))
@@ -328,9 +304,7 @@ pub fn hidden(
 /// `#id`, in JavaScript with `document.getElementById("id")`, or by anchors on
 /// the same page with the URL `"#id"`.
 ///
-pub fn id(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn id(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.id(value))
@@ -343,9 +317,7 @@ pub fn id(
 /// greying them out: this can help avoid confusion for users who may not otherwise
 /// know the content they are looking at is inactive.
 ///
-pub fn inert(
-  is_inert: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn inert(is_inert: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.inert(is_inert))
@@ -369,9 +341,7 @@ pub fn inert(
 /// The `"none"` value should only be used in cases where you are rendering a
 /// custom input method, otherwise the user will not be able to enter any text!
 ///
-pub fn inputmode(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn inputmode(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.inputmode(value))
@@ -381,9 +351,7 @@ pub fn inputmode(
 /// Specifies the [customised built-in element](https://html.spec.whatwg.org/#customized-built-in-element)
 /// to be used in place of the native element this attribute is applied to.
 ///
-pub fn is(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn is(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.is(value))
@@ -394,9 +362,7 @@ pub fn is(
 /// specify the global unique identifier of an item, for example books that are
 /// identifiable by their ISBN.
 ///
-pub fn itemid(
-  id: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn itemid(id: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.itemid(id))
@@ -407,9 +373,7 @@ pub fn itemid(
 /// specify that the content of the element is to be treated as a value of the
 /// given property name.
 ///
-pub fn itemprop(
-  name: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn itemprop(name: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.itemprop(name))
@@ -420,9 +384,7 @@ pub fn itemprop(
 /// indicate that the element and its descendants form a single item of key-value
 /// data.
 ///
-pub fn itemscope(
-  has_scope: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn itemscope(has_scope: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.itemscope(has_scope))
@@ -434,9 +396,7 @@ pub fn itemscope(
 /// a schema containing the vocabulary used for an item's key-value pairs, such
 /// as a schema.org type.
 ///
-pub fn itemtype(
-  url: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn itemtype(url: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.itemtype(url))
@@ -450,9 +410,7 @@ pub fn itemtype(
 ///
 /// The value must be a valid [BCP 47 language tag](https://tools.ietf.org/html/bcp47).
 ///
-pub fn lang(
-  language: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn lang(language: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.lang(language))
@@ -462,9 +420,7 @@ pub fn lang(
 /// A cryptographic nonce used by CSP (Content Security Policy) to allow or
 /// deny the fetch of a given resource.
 ///
-pub fn nonce(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn nonce(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.nonce(value))
@@ -492,9 +448,7 @@ pub fn nonce(
 /// [`popovertarget`](#popovertarget) attribute on the element that should trigger
 /// the popover.
 ///
-pub fn popover(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn popover(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.popover(value))
@@ -505,9 +459,7 @@ pub fn popover(
 /// This typically only applies to inputs and textareas, or elements that are
 /// [`contenteditable`](#contenteditable).
 ///
-pub fn spellcheck(
-  should_check: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn spellcheck(should_check: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.spellcheck(should_check))
@@ -525,7 +477,7 @@ pub fn spellcheck(
 pub fn style(
   property: String,
   value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.style(property, value))
@@ -541,7 +493,7 @@ pub fn style(
 ///
 pub fn styles(
   properties: List(#(String, String)),
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.styles(properties))
@@ -567,9 +519,7 @@ pub fn styles(
 /// Values other than `0` and `-1` are generally not recommended as managing
 /// the relative order of focusable elements can be difficult and error-prone.
 ///
-pub fn tabindex(
-  index: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn tabindex(index: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.tabindex(index))
@@ -584,9 +534,7 @@ pub fn tabindex(
 /// expose the `title` attribute to keyboard-only users or touch devices, for
 /// example.
 ///
-pub fn title(
-  text: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn title(text: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.title(text))
@@ -611,9 +559,7 @@ pub fn title(
 /// | style       | *                                          |
 /// | value       | input (with type="button" or type="reset") |
 ///
-pub fn translate(
-  should_translate: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn translate(should_translate: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.translate(should_translate))
@@ -622,9 +568,7 @@ pub fn translate(
 
 /// Indicates if writing suggestions should be enabled for this element.
 ///
-pub fn writingsuggestions(
-  enabled: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn writingsuggestions(enabled: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.writingsuggestions(enabled))
@@ -635,9 +579,7 @@ pub fn writingsuggestions(
 
 /// Indicates whether the details element is open or closed.
 ///
-pub fn open(
-  is_open: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn open(is_open: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.open(is_open))
@@ -649,9 +591,7 @@ pub fn open(
 /// Specifies the URL of a linked resource. This attribute can be used on various
 /// elements to create hyperlinks or to load resources.
 ///
-pub fn href(
-  url: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn href(url: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.href(url))
@@ -672,9 +612,7 @@ pub fn href(
 /// > **Note**: consider against using `"_blank"` for links to external sites as it
 /// > removes user control over their browsing experience.
 ///
-pub fn target(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn target(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.target(value))
@@ -684,9 +622,7 @@ pub fn target(
 /// Indicates that the linked resource should be downloaded rather than displayed.
 /// When provided with a value, it suggests a filename for the downloaded file.
 ///
-pub fn download(
-  filename: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn download(filename: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.download(filename))
@@ -697,9 +633,7 @@ pub fn download(
 /// follows the hyperlink. These URLs will receive POST requests with bodies
 /// of type `ping/1.0`.
 ///
-pub fn ping(
-  urls: List(String),
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn ping(urls: List(String)) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.ping(urls))
@@ -709,9 +643,7 @@ pub fn ping(
 /// Specifies the relationship between the current document and the linked resource.
 /// Multiple relationship values can be provided as a space-separated list.
 ///
-pub fn rel(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn rel(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.rel(value))
@@ -721,9 +653,7 @@ pub fn rel(
 /// Specifies the language of the linked resource. The value must be a valid
 /// [BCP 47 language tag](https://tools.ietf.org/html/bcp47).
 ///
-pub fn hreflang(
-  language: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn hreflang(language: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.hreflang(language))
@@ -744,9 +674,7 @@ pub fn hreflang(
 /// | "strict-origin-when-cross-origin" | Default policy with varying levels of restriction      |
 /// | "unsafe-url"                      | Always send the full URL                               |
 ///
-pub fn referrerpolicy(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn referrerpolicy(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.referrerpolicy(value))
@@ -775,9 +703,7 @@ pub fn referrerpolicy(
 /// | "video"    | `<video>`                        |
 /// | "worker"   | Worker, SharedWorker             |
 ///
-pub fn as_(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn as_(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.as_(value))
@@ -792,9 +718,7 @@ pub fn as_(
 /// an external stylesheet and its critical subresources have been fetched and
 /// applied to the document.
 ///
-pub fn blocking(
-  value: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn blocking(value: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.blocking(value))
@@ -808,9 +732,7 @@ pub fn blocking(
 /// > `rel="stylesheet"`, `rel="preload"`, or `rel="modulepreload"`. It may also
 /// > be used on `<script>` elements.
 ///
-pub fn integrity(
-  hash: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn integrity(hash: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.integrity(hash))
@@ -823,9 +745,7 @@ pub fn integrity(
 /// This attribute is essential for accessibility, providing context about the
 /// image to users who cannot see it, including those using screen readers.
 ///
-pub fn alt(
-  text: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn alt(text: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.alt(text))
@@ -834,9 +754,7 @@ pub fn alt(
 
 /// Specifies the URL of an image or resource to be used.
 ///
-pub fn src(
-  url: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn src(url: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.src(url))
@@ -847,9 +765,7 @@ pub fn src(
 /// browsers to choose the most appropriate image based on factors like screen
 /// resolution and viewport size.
 ///
-pub fn srcset(
-  sources: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn srcset(sources: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.srcset(sources))
@@ -859,9 +775,7 @@ pub fn srcset(
 /// Used with `srcset` to define the size of images in different layout scenarios.
 /// Helps the browser select the most appropriate image source.
 ///
-pub fn sizes(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn sizes(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.sizes(value))
@@ -871,9 +785,7 @@ pub fn sizes(
 /// Configures the CORS (Cross-Origin Resource Sharing) settings for the element.
 /// Valid values are "anonymous" and "use-credentials".
 ///
-pub fn crossorigin(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn crossorigin(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.crossorigin(value))
@@ -882,9 +794,7 @@ pub fn crossorigin(
 
 /// Specifies the name of an image map to be used with the image.
 ///
-pub fn usemap(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn usemap(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.usemap(value))
@@ -894,9 +804,7 @@ pub fn usemap(
 /// Indicates that the image is a server-side image map. When a user clicks on the
 /// image, the coordinates of the click are sent to the server.
 ///
-pub fn ismap(
-  is_map: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn ismap(is_map: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.ismap(is_map))
@@ -905,9 +813,7 @@ pub fn ismap(
 
 /// Specifies the width of the element in pixels.
 ///
-pub fn width(
-  value: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn width(value: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.width(value))
@@ -916,9 +822,7 @@ pub fn width(
 
 /// Specifies the height of the element in pixels.
 ///
-pub fn height(
-  value: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn height(value: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.height(value))
@@ -928,9 +832,7 @@ pub fn height(
 /// Provides a hint about how the image should be decoded. Valid values are
 /// "sync", "async", and "auto".
 ///
-pub fn decoding(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn decoding(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.decoding(value))
@@ -940,9 +842,7 @@ pub fn decoding(
 /// Indicates how the browser should load the image. Valid values are "eager"
 /// (load immediately) and "lazy" (defer loading until needed).
 ///
-pub fn loading(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn loading(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.loading(value))
@@ -952,9 +852,7 @@ pub fn loading(
 /// Sets the priority for fetches initiated by the element. Valid values are
 /// "high", "low", and "auto".
 ///
-pub fn fetchpriority(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn fetchpriority(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.fetchpriority(value))
@@ -967,9 +865,7 @@ pub fn fetchpriority(
 /// servers to know how to interpret the form data. Multiple encodings can be
 /// specified as a space-separated list.
 ///
-pub fn accept_charset(
-  charsets: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn accept_charset(charsets: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.accept_charset(charsets))
@@ -979,9 +875,7 @@ pub fn accept_charset(
 /// Specifies the URL to which the form's data should be sent when submitted.
 /// This can be overridden by formaction attributes on submit buttons.
 ///
-pub fn action(
-  url: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn action(url: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.action(url))
@@ -997,9 +891,7 @@ pub fn action(
 /// | "multipart/form-data"               | Required for file uploads             |
 /// | "text/plain"                        | Simple encoding with minimal escaping  |
 ///
-pub fn enctype(
-  encoding_type: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn enctype(encoding_type: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.enctype(encoding_type))
@@ -1014,9 +906,7 @@ pub fn enctype(
 /// | "post"   | Sends form data in the body of the HTTP request          |
 /// | "dialog" | Closes a dialog if the form is inside one                |
 ///
-pub fn method(
-  http_method: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn method(http_method: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.method(http_method))
@@ -1028,7 +918,7 @@ pub fn method(
 ///
 pub fn novalidate(
   disable_validation: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.novalidate(disable_validation))
@@ -1056,9 +946,7 @@ pub fn novalidate(
 /// > not guarantee that the user will only be able to select files of the specified
 /// > type.
 ///
-pub fn accept(
-  values: List(String),
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn accept(values: List(String)) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.accept(values))
@@ -1072,9 +960,7 @@ pub fn accept(
 ///
 /// - `"color"`
 ///
-pub fn alpha(
-  allowed: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn alpha(allowed: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.alpha(allowed))
@@ -1122,9 +1008,7 @@ pub fn alpha(
 /// - `"url"`
 /// - `"week"`
 ///
-pub fn autocomplete(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn autocomplete(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.autocomplete(value))
@@ -1141,9 +1025,7 @@ pub fn autocomplete(
 /// - `"checkbox"`
 /// - `"radio"`
 ///
-pub fn checked(
-  is_checked: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn checked(is_checked: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.checked(is_checked))
@@ -1159,9 +1041,7 @@ pub fn checked(
 /// Doing this means your application cannot set the value of an input after it
 /// is modified without using an effect.
 ///
-pub fn default_checked(
-  is_checked: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn default_checked(is_checked: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.default_checked(is_checked))
@@ -1183,9 +1063,7 @@ pub fn default_checked(
 ///
 /// - `"color"`
 ///
-pub fn colorspace(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn colorspace(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.colorspace(value))
@@ -1206,9 +1084,7 @@ pub fn colorspace(
 /// - `"text"`
 /// - `"url"`
 ///
-pub fn dirname(
-  direction: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn dirname(direction: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.dirname(direction))
@@ -1218,9 +1094,7 @@ pub fn dirname(
 /// Controls whether or not the input is disabled. Disabled inputs are not
 /// validated during form submission and are not interactive.
 ///
-pub fn disabled(
-  is_disabled: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn disabled(is_disabled: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.disabled(is_disabled))
@@ -1229,9 +1103,7 @@ pub fn disabled(
 
 ///
 ///
-pub fn for(
-  id: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn for(id: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.for(id))
@@ -1240,9 +1112,7 @@ pub fn for(
 
 /// Associates the input with a form element located elsewhere in the document.
 ///
-pub fn form(
-  id: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn form(id: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.form(id))
@@ -1257,9 +1127,7 @@ pub fn form(
 /// - `"image"`
 /// - `"submit"`
 ///
-pub fn formaction(
-  url: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn formaction(url: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.formaction(url))
@@ -1271,9 +1139,7 @@ pub fn formaction(
 /// - `"image"`
 /// - `"submit"`
 ///
-pub fn formenctype(
-  encoding_type: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn formenctype(encoding_type: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.formenctype(encoding_type))
@@ -1285,9 +1151,7 @@ pub fn formenctype(
 /// - `"image"`
 /// - `"submit"`
 ///
-pub fn formmethod(
-  method: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn formmethod(method: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.formmethod(method))
@@ -1299,9 +1163,7 @@ pub fn formmethod(
 /// - `"image"`
 /// - `"submit"`
 ///
-pub fn formnovalidate(
-  no_validate: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn formnovalidate(no_validate: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.formnovalidate(no_validate))
@@ -1313,9 +1175,7 @@ pub fn formnovalidate(
 /// - `"image"`
 /// - `"submit"`
 ///
-pub fn formtarget(
-  target: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn formtarget(target: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.formtarget(target))
@@ -1340,9 +1200,7 @@ pub fn formtarget(
 /// - `"url"`
 /// - `"week"`
 ///
-pub fn list(
-  id: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn list(id: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.list(id))
@@ -1363,9 +1221,7 @@ pub fn list(
 /// - `"time"`
 /// - `"week"`
 ///
-pub fn max(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn max(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.max(value))
@@ -1383,9 +1239,7 @@ pub fn max(
 /// - `"text"`
 /// - `"url"`
 ///
-pub fn maxlength(
-  length: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn maxlength(length: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.maxlength(length))
@@ -1404,9 +1258,7 @@ pub fn maxlength(
 /// - `"time"`
 /// - `"week"`
 ///
-pub fn min(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn min(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.min(value))
@@ -1422,9 +1274,7 @@ pub fn min(
 /// - `"text"`
 /// - `"url"`
 ///
-pub fn minlength(
-  length: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn minlength(length: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.minlength(length))
@@ -1438,9 +1288,7 @@ pub fn minlength(
 /// - `"email"`
 /// - `"file"`
 ///
-pub fn multiple(
-  allow_multiple: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn multiple(allow_multiple: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.multiple(allow_multiple))
@@ -1449,9 +1297,7 @@ pub fn multiple(
 
 /// Name of the element to use for form submission and in the form.elements API
 ///
-pub fn name(
-  element_name: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn name(element_name: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.name(element_name))
@@ -1467,9 +1313,7 @@ pub fn name(
 /// - `"text"`
 /// - `"url"`
 ///
-pub fn pattern(
-  regex: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn pattern(regex: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.pattern(regex))
@@ -1486,9 +1330,7 @@ pub fn pattern(
 /// - `"text"`
 /// - `"url"`
 ///
-pub fn placeholder(
-  text: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn placeholder(text: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.placeholder(text))
@@ -1504,9 +1346,7 @@ pub fn placeholder(
 /// - `"reset"`
 /// - `"submit"`
 ///
-pub fn popovertarget(
-  id: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn popovertarget(id: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.popovertarget(id))
@@ -1522,9 +1362,7 @@ pub fn popovertarget(
 /// - `"reset"`
 /// - `"submit"`
 ///
-pub fn popovertargetaction(
-  action: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn popovertargetaction(action: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.popovertargetaction(action))
@@ -1547,9 +1385,7 @@ pub fn popovertargetaction(
 /// - `"url"`
 /// - `"week"`
 ///
-pub fn readonly(
-  is_readonly: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn readonly(is_readonly: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.readonly(is_readonly))
@@ -1574,9 +1410,7 @@ pub fn readonly(
 /// - `"url"`
 /// - `"week"`
 ///
-pub fn required(
-  is_required: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn required(is_required: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.required(is_required))
@@ -1587,9 +1421,7 @@ pub fn required(
 /// option can be selected at a time, unless the [`"multiple"`](#multiple)
 /// attribute is set on the select element.
 ///
-pub fn selected(
-  is_selected: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn selected(is_selected: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.selected(is_selected))
@@ -1606,9 +1438,7 @@ pub fn selected(
 /// Doing this means your application cannot set the value of an input after it
 /// is modified without using an effect.
 ///
-pub fn default_selected(
-  is_selected: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn default_selected(is_selected: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.default_selected(is_selected))
@@ -1626,9 +1456,7 @@ pub fn default_selected(
 /// - `"text"`
 /// - `"url"`
 ///
-pub fn size(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn size(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.size(value))
@@ -1647,9 +1475,7 @@ pub fn size(
 /// - `"time"`
 /// - `"week"`
 ///
-pub fn step(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn step(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.step(value))
@@ -1658,9 +1484,7 @@ pub fn step(
 
 /// Type of form control
 ///
-pub fn type_(
-  control_type: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn type_(control_type: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.type_(control_type))
@@ -1675,9 +1499,7 @@ pub fn type_(
 /// default value for users to see, use the [`default_value`](#default_value)
 /// attribute instead.
 ///
-pub fn value(
-  control_value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn value(control_value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.value(control_value))
@@ -1695,7 +1517,7 @@ pub fn value(
 ///
 pub fn default_value(
   control_value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.default_value(control_value))
@@ -1707,9 +1529,7 @@ pub fn default_value(
 /// Sets a pragma directive for a document. This is used in meta tags to define
 /// behaviors the user agent should follow.
 ///
-pub fn http_equiv(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn http_equiv(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.http_equiv(value))
@@ -1719,9 +1539,7 @@ pub fn http_equiv(
 /// Specifies the value of the meta element, which varies depending on the value
 /// of the name or http-equiv attribute.
 ///
-pub fn content(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn content(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.content(value))
@@ -1731,9 +1549,7 @@ pub fn content(
 /// Declares the character encoding used in the document. When used with a meta
 /// element, this replaces the need for the `http_equiv("content-type")` attribute.
 ///
-pub fn charset(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn charset(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.charset(value))
@@ -1743,9 +1559,7 @@ pub fn charset(
 /// Specifies the media types the resource applies to. This is commonly used with
 /// link elements for stylesheets to determine when they should be loaded.
 ///
-pub fn media(
-  query: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn media(query: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.media(query))
@@ -1762,9 +1576,7 @@ pub fn media(
 /// > to true, the media will begin playing as if the element's `play()` method
 /// > was called.
 ///
-pub fn autoplay(
-  auto_play: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn autoplay(auto_play: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.autoplay(auto_play))
@@ -1774,9 +1586,7 @@ pub fn autoplay(
 /// When present, this attribute shows the browser's built-in control panel for the
 /// media player, giving users control over playback, volume, seeking, and more.
 ///
-pub fn controls(
-  show_controls: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn controls(show_controls: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.controls(show_controls))
@@ -1786,9 +1596,7 @@ pub fn controls(
 /// When present, this attribute indicates that the media should start over again
 /// from the beginning when it reaches the end.
 ///
-pub fn loop(
-  should_loop: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn loop(should_loop: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.loop(should_loop))
@@ -1798,9 +1606,7 @@ pub fn loop(
 /// When present, this attribute indicates that the audio output of the media element
 /// should be initially silenced.
 ///
-pub fn muted(
-  is_muted: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn muted(is_muted: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.muted(is_muted))
@@ -1814,9 +1620,7 @@ pub fn muted(
 /// This attribute only acts as a *hint* to the user agent, and setting this to
 /// false does not imply that the video will be played in fullscreen.
 ///
-pub fn playsinline(
-  play_inline: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn playsinline(play_inline: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.playsinline(play_inline))
@@ -1826,9 +1630,7 @@ pub fn playsinline(
 /// Specifies an image to be shown while the video is downloading, or until the
 /// user hits the play button.
 ///
-pub fn poster(
-  url: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn poster(url: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.poster(url))
@@ -1844,9 +1646,7 @@ pub fn poster(
 /// | "metadata" | Hints to the user agent that it can fetch the metadata only.     |
 /// | "none"     | Hints to the user agent that server traffic should be minimised. |
 ///
-pub fn preload(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn preload(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.preload(value))
@@ -1868,9 +1668,7 @@ pub fn preload(
 /// > configuration - or `"closed"` if not explicitly set - to ensure the shadow
 /// > root is created correctly.
 ///
-pub fn shadowrootmode(
-  mode: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn shadowrootmode(mode: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.shadowrootmode(mode))
@@ -1882,7 +1680,7 @@ pub fn shadowrootmode(
 ///
 pub fn shadowrootdelegatesfocus(
   delegates: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.shadowrootdelegatesfocus(delegates))
@@ -1892,9 +1690,7 @@ pub fn shadowrootdelegatesfocus(
 /// Determines whether the shadow root can be cloned when the host element is
 /// cloned.
 ///
-pub fn shadowrootclonable(
-  clonable: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn shadowrootclonable(clonable: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.shadowrootclonable(clonable))
@@ -1906,7 +1702,7 @@ pub fn shadowrootclonable(
 ///
 pub fn shadowrootserializable(
   serializable: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.shadowrootserializable(serializable))
@@ -1920,9 +1716,7 @@ pub fn shadowrootserializable(
 /// contexts. Some user-agents, such as speech readers, may present this description
 /// before the content itself.
 ///
-pub fn abbr(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn abbr(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.abbr(value))
@@ -1933,9 +1727,7 @@ pub fn abbr(
 /// or extends. The default value is `1`. User agents dismiss values higher than
 /// `1000` as incorrect, defaulting such values to `1`.
 ///
-pub fn colspan(
-  value: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn colspan(value: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.colspan(value))
@@ -1945,9 +1737,7 @@ pub fn colspan(
 /// A list of space-separated strings corresponding to the id attributes of the
 /// `<th>` elements that provide the headers for this header cell.
 ///
-pub fn headers(
-  ids: List(String),
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn headers(ids: List(String)) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.headers(ids))
@@ -1959,9 +1749,7 @@ pub fn headers(
 /// cell will extends to the end of the table grouping section, that the `<th>`
 /// belongs to. Values higher than `65534` are clipped at `65534`.
 ///
-pub fn rowspan(
-  value: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn rowspan(value: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.rowspan(value))
@@ -1971,9 +1759,7 @@ pub fn rowspan(
 /// Specifies the number of consecutive columns a `<colgroup>` element spans. The
 /// value must be a positive integer greater than zero.
 ///
-pub fn span(
-  value: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn span(value: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.span(value))
@@ -1985,9 +1771,7 @@ pub fn span(
 ///
 /// The `scope` attribute is only valid on `<th>` elements.
 ///
-pub fn scope(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn scope(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.scope(value))
@@ -1999,10 +1783,7 @@ pub fn scope(
 /// Add an `aria-*` attribute to an HTML element. The key will be prefixed by
 /// `aria-`.
 ///
-pub fn aria(
-  name: String,
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria(name: String, value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria(name, value))
@@ -2011,9 +1792,7 @@ pub fn aria(
 
 ///
 ///
-pub fn role(
-  name: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn role(name: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.role(name))
@@ -2023,9 +1802,7 @@ pub fn role(
 /// The aria-activedescendant attribute identifies the currently active element
 /// when focus is on a composite widget, combobox, textbox, group, or application.
 ///
-pub fn aria_activedescendant(
-  id: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_activedescendant(id: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_activedescendant(id))
@@ -2037,9 +1814,7 @@ pub fn aria_activedescendant(
 /// of, the changed region based on the change notifications defined by the
 /// aria-relevant attribute.
 ///
-pub fn aria_atomic(
-  value: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_atomic(value: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_atomic(value))
@@ -2051,9 +1826,7 @@ pub fn aria_atomic(
 /// searchbox, or textbox and specifies how predictions will be presented if they
 /// are made.
 ///
-pub fn aria_autocomplete(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_autocomplete(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_autocomplete(value))
@@ -2063,9 +1836,7 @@ pub fn aria_autocomplete(
 /// The global aria-braillelabel property defines a string value that labels the
 /// current element, which is intended to be converted into Braille.
 ///
-pub fn aria_braillelabel(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_braillelabel(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_braillelabel(value))
@@ -2078,7 +1849,7 @@ pub fn aria_braillelabel(
 ///
 pub fn aria_brailleroledescription(
   value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_brailleroledescription(value))
@@ -2089,9 +1860,7 @@ pub fn aria_brailleroledescription(
 /// being modified and that assistive technologies may want to wait until the
 /// changes are complete before informing the user about the update.
 ///
-pub fn aria_busy(
-  value: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_busy(value: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_busy(value))
@@ -2101,9 +1870,7 @@ pub fn aria_busy(
 /// The aria-checked attribute indicates the current "checked" state of checkboxes,
 /// radio buttons, and other widgets.
 ///
-pub fn aria_checked(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_checked(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_checked(value))
@@ -2113,9 +1880,7 @@ pub fn aria_checked(
 /// The aria-colcount attribute defines the total number of columns in a table,
 /// grid, or treegrid when not all columns are present in the DOM.
 ///
-pub fn aria_colcount(
-  value: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_colcount(value: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_colcount(value))
@@ -2125,9 +1890,7 @@ pub fn aria_colcount(
 /// The aria-colindex attribute defines an element's column index or position with
 /// respect to the total number of columns within a table, grid, or treegrid.
 ///
-pub fn aria_colindex(
-  value: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_colindex(value: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_colindex(value))
@@ -2137,9 +1900,7 @@ pub fn aria_colindex(
 /// The aria-colindextext attribute defines a human-readable text alternative of
 /// the numeric aria-colindex.
 ///
-pub fn aria_colindextext(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_colindextext(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_colindextext(value))
@@ -2149,9 +1910,7 @@ pub fn aria_colindextext(
 /// The aria-colspan attribute defines the number of columns spanned by a cell
 /// or gridcell within a table, grid, or treegrid.
 ///
-pub fn aria_colspan(
-  value: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_colspan(value: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_colspan(value))
@@ -2162,9 +1921,7 @@ pub fn aria_colspan(
 /// contents or presence are controlled by the element on which this attribute is
 /// set.
 ///
-pub fn aria_controls(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_controls(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_controls(value))
@@ -2174,9 +1931,7 @@ pub fn aria_controls(
 /// A non-null aria-current state on an element indicates that this element represents
 /// the current item within a container or set of related elements.
 ///
-pub fn aria_current(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_current(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_current(value))
@@ -2186,9 +1941,7 @@ pub fn aria_current(
 /// The global aria-describedby attribute identifies the element (or elements)
 /// that describes the element on which the attribute is set.
 ///
-pub fn aria_describedby(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_describedby(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_describedby(value))
@@ -2198,9 +1951,7 @@ pub fn aria_describedby(
 /// The global aria-description attribute defines a string value that describes
 /// or annotates the current element.
 ///
-pub fn aria_description(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_description(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_description(value))
@@ -2210,9 +1961,7 @@ pub fn aria_description(
 /// The global aria-details attribute identifies the element (or elements) that
 /// provide additional information related to the object.
 ///
-pub fn aria_details(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_details(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_details(value))
@@ -2222,9 +1971,7 @@ pub fn aria_details(
 /// The aria-disabled state indicates that the element is perceivable but disabled,
 /// so it is not editable or otherwise operable.
 ///
-pub fn aria_disabled(
-  value: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_disabled(value: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_disabled(value))
@@ -2234,9 +1981,7 @@ pub fn aria_disabled(
 /// The aria-errormessage attribute on an object identifies the element that
 /// provides an error message for that object.
 ///
-pub fn aria_errormessage(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_errormessage(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_errormessage(value))
@@ -2247,9 +1992,7 @@ pub fn aria_errormessage(
 /// expanded or collapsed, and whether or not the controlled elements are displayed
 /// or hidden.
 ///
-pub fn aria_expanded(
-  value: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_expanded(value: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_expanded(value))
@@ -2261,9 +2004,7 @@ pub fn aria_expanded(
 /// override the general default of reading in document source order at the user's
 /// discretion.
 ///
-pub fn aria_flowto(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_flowto(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_flowto(value))
@@ -2274,9 +2015,7 @@ pub fn aria_flowto(
 /// popup element that can be triggered by the element on which the attribute is
 /// set.
 ///
-pub fn aria_haspopup(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_haspopup(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_haspopup(value))
@@ -2286,9 +2025,7 @@ pub fn aria_haspopup(
 /// The aria-hidden state indicates whether the element is exposed to an accessibility
 /// API.
 ///
-pub fn aria_hidden(
-  value: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_hidden(value: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_hidden(value))
@@ -2298,9 +2035,7 @@ pub fn aria_hidden(
 /// The aria-invalid state indicates the entered value does not conform to the
 /// format expected by the application.
 ///
-pub fn aria_invalid(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_invalid(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_invalid(value))
@@ -2310,9 +2045,7 @@ pub fn aria_invalid(
 /// The global aria-keyshortcuts attribute indicates keyboard shortcuts that an
 /// author has implemented to activate or give focus to an element.
 ///
-pub fn aria_keyshortcuts(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_keyshortcuts(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_keyshortcuts(value))
@@ -2322,9 +2055,7 @@ pub fn aria_keyshortcuts(
 /// The aria-label attribute defines a string value that can be used to name an
 /// element, as long as the element's role does not prohibit naming.
 ///
-pub fn aria_label(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_label(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_label(value))
@@ -2334,9 +2065,7 @@ pub fn aria_label(
 /// The aria-labelledby attribute identifies the element (or elements) that labels
 /// the element it is applied to.
 ///
-pub fn aria_labelledby(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_labelledby(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_labelledby(value))
@@ -2346,9 +2075,7 @@ pub fn aria_labelledby(
 /// The aria-level attribute defines the hierarchical level of an element within
 /// a structure.
 ///
-pub fn aria_level(
-  value: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_level(value: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_level(value))
@@ -2359,9 +2086,7 @@ pub fn aria_level(
 /// describes the types of updates the user agents, assistive technologies, and
 /// user can expect from the live region.
 ///
-pub fn aria_live(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_live(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_live(value))
@@ -2370,9 +2095,7 @@ pub fn aria_live(
 
 /// The aria-modal attribute indicates whether an element is modal when displayed.
 ///
-pub fn aria_modal(
-  value: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_modal(value: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_modal(value))
@@ -2382,9 +2105,7 @@ pub fn aria_modal(
 /// The aria-multiline attribute indicates whether a textbox accepts multiple
 /// lines of input or only a single line.
 ///
-pub fn aria_multiline(
-  value: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_multiline(value: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_multiline(value))
@@ -2394,9 +2115,7 @@ pub fn aria_multiline(
 /// The aria-multiselectable attribute indicates that the user may select more
 /// than one item from the current selectable descendants.
 ///
-pub fn aria_multiselectable(
-  value: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_multiselectable(value: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_multiselectable(value))
@@ -2406,9 +2125,7 @@ pub fn aria_multiselectable(
 /// The aria-orientation attribute indicates whether the element's orientation is
 /// horizontal, vertical, or unknown/ambiguous.
 ///
-pub fn aria_orientation(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_orientation(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_orientation(value))
@@ -2419,9 +2136,7 @@ pub fn aria_orientation(
 /// a visual, functional, or contextual relationship between a parent and its
 /// child elements when the DOM hierarchy cannot be used to represent the relationship.
 ///
-pub fn aria_owns(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_owns(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_owns(value))
@@ -2432,9 +2147,7 @@ pub fn aria_owns(
 /// intended to help the user with data entry when a form control has no value.
 /// The hint can be a sample value or a brief description of the expected format.
 ///
-pub fn aria_placeholder(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_placeholder(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_placeholder(value))
@@ -2445,9 +2158,7 @@ pub fn aria_placeholder(
 /// current set of listitems or treeitems when not all items are present in the
 /// DOM.
 ///
-pub fn aria_posinset(
-  value: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_posinset(value: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_posinset(value))
@@ -2457,9 +2168,7 @@ pub fn aria_posinset(
 /// The aria-pressed attribute indicates the current "pressed" state of a toggle
 /// button.
 ///
-pub fn aria_pressed(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_pressed(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_pressed(value))
@@ -2469,9 +2178,7 @@ pub fn aria_pressed(
 /// The aria-readonly attribute indicates that the element is not editable, but is
 /// otherwise operable.
 ///
-pub fn aria_readonly(
-  value: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_readonly(value: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_readonly(value))
@@ -2482,9 +2189,7 @@ pub fn aria_readonly(
 /// notifications the user agent will trigger when the accessibility tree within
 /// a live region is modified.
 ///
-pub fn aria_relevant(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_relevant(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_relevant(value))
@@ -2494,9 +2199,7 @@ pub fn aria_relevant(
 /// The aria-required attribute indicates that user input is required on the element
 /// before a form may be submitted.
 ///
-pub fn aria_required(
-  value: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_required(value: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_required(value))
@@ -2506,9 +2209,7 @@ pub fn aria_required(
 /// The aria-roledescription attribute defines a human-readable, author-localised
 /// description for the role of an element.
 ///
-pub fn aria_roledescription(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_roledescription(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_roledescription(value))
@@ -2518,9 +2219,7 @@ pub fn aria_roledescription(
 /// The aria-rowcount attribute defines the total number of rows in a table,
 /// grid, or treegrid.
 ///
-pub fn aria_rowcount(
-  value: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_rowcount(value: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_rowcount(value))
@@ -2530,9 +2229,7 @@ pub fn aria_rowcount(
 /// The aria-rowindex attribute defines an element's position with respect to the
 /// total number of rows within a table, grid, or treegrid.
 ///
-pub fn aria_rowindex(
-  value: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_rowindex(value: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_rowindex(value))
@@ -2542,9 +2239,7 @@ pub fn aria_rowindex(
 /// The aria-rowindextext attribute defines a human-readable text alternative of
 /// aria-rowindex.
 ///
-pub fn aria_rowindextext(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_rowindextext(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_rowindextext(value))
@@ -2554,9 +2249,7 @@ pub fn aria_rowindextext(
 /// The aria-rowspan attribute defines the number of rows spanned by a cell or
 /// gridcell within a table, grid, or treegrid.
 ///
-pub fn aria_rowspan(
-  value: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_rowspan(value: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_rowspan(value))
@@ -2566,9 +2259,7 @@ pub fn aria_rowspan(
 /// The aria-selected attribute indicates the current "selected" state of various
 /// widgets.
 ///
-pub fn aria_selected(
-  value: Bool,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_selected(value: Bool) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_selected(value))
@@ -2578,9 +2269,7 @@ pub fn aria_selected(
 /// The aria-setsize attribute defines the number of items in the current set of
 /// listitems or treeitems when not all items in the set are present in the DOM.
 ///
-pub fn aria_setsize(
-  value: Int,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_setsize(value: Int) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_setsize(value))
@@ -2590,9 +2279,7 @@ pub fn aria_setsize(
 /// The aria-sort attribute indicates if items in a table or grid are sorted in
 /// ascending or descending order.
 ///
-pub fn aria_sort(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_sort(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_sort(value))
@@ -2602,9 +2289,7 @@ pub fn aria_sort(
 /// The aria-valuemax attribute defines the maximum allowed value for a range
 /// widget.
 ///
-pub fn aria_valuemax(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_valuemax(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_valuemax(value))
@@ -2614,9 +2299,7 @@ pub fn aria_valuemax(
 /// The aria-valuemin attribute defines the minimum allowed value for a range
 /// widget.
 ///
-pub fn aria_valuemin(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_valuemin(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_valuemin(value))
@@ -2625,9 +2308,7 @@ pub fn aria_valuemin(
 
 /// The aria-valuenow attribute defines the current value for a range widget.
 ///
-pub fn aria_valuenow(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_valuenow(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_valuenow(value))
@@ -2637,9 +2318,7 @@ pub fn aria_valuenow(
 /// The aria-valuetext attribute defines the human-readable text alternative of
 /// aria-valuenow for a range widget.
 ///
-pub fn aria_valuetext(
-  value: String,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.AttributeOrProperty) {
+pub fn aria_valuetext(value: String) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
     |> add_attribute(attribute.aria_valuetext(value))

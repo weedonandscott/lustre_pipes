@@ -42,10 +42,10 @@ pub fn emit(event: String, data) {
 pub fn on(
   name: String,
   handler: Decoder(msg),
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
+) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
-    |> scaffold.attach_event(event.on(name, handler))
+    |> scaffold.attach_attribute(event.on(name, handler))
   }
 }
 
@@ -66,10 +66,10 @@ pub fn on(
 pub fn advanced(
   name: String,
   handler: Decoder(Handler(msg)),
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
+) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
-    |> scaffold.attach_event(event.advanced(name, handler))
+    |> scaffold.attach_attribute(event.advanced(name, handler))
   }
 }
 
@@ -82,26 +82,6 @@ pub fn handler(
   stop_propagation stop_propagation: Bool,
 ) -> Handler(msg) {
   event.handler(prevent_default:, stop_propagation:, dispatch: message)
-}
-
-pub fn with(
-  scaffold: Scaffold(msg, to_attr),
-  event_fn: fn(Scaffold(msg, to_attr)) -> Scaffold(msg, scaffold.Event),
-  modifiers: fn(Attribute(msg)) -> Attribute(msg),
-) -> Scaffold(msg, scaffold.Event) {
-  scaffold
-  |> event_fn
-  |> scaffold.modify_latest_attr(modifiers)
-}
-
-pub fn with_many(
-  scaffold: Scaffold(msg, to_attr),
-  event_fn: fn(Scaffold(msg, to_attr)) -> Scaffold(msg, scaffold.Event),
-  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
-) -> Scaffold(msg, scaffold.Event) {
-  scaffold
-  |> event_fn
-  |> scaffold.modify_latest_attr_with_many(modifiers)
 }
 
 /// Indicate that the event should have its default behaviour cancelled. This is
@@ -163,73 +143,129 @@ pub fn throttle(delay: Int) {
 // MOUSE EVENTS ----------------------------------------------------------------
 
 ///
-pub fn on_click(
-  msg: msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
+pub fn on_click(msg: msg) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
-    |> scaffold.attach_event(event.on_click(msg))
+    |> scaffold.attach_attribute(event.on_click(msg))
   }
 }
 
-///
-pub fn on_mouse_down(
-  msg: msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
-  fn(scaffold) {
-    scaffold
-    |> scaffold.attach_event(event.on_mouse_down(msg))
-  }
+pub fn on_click_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_click(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
 }
 
 ///
-pub fn on_mouse_up(
-  msg: msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
+pub fn on_mouse_down(msg: msg) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
-    |> scaffold.attach_event(event.on_mouse_up(msg))
+    |> scaffold.attach_attribute(event.on_mouse_down(msg))
   }
 }
 
-///
-pub fn on_mouse_enter(
-  msg: msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
-  fn(scaffold) {
-    scaffold
-    |> scaffold.attach_event(event.on_mouse_enter(msg))
-  }
+pub fn on_mouse_down_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_mouse_down(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
 }
 
 ///
-pub fn on_mouse_leave(
-  msg: msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
+pub fn on_mouse_up(msg: msg) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
-    |> scaffold.attach_event(event.on_mouse_leave(msg))
+    |> scaffold.attach_attribute(event.on_mouse_up(msg))
   }
 }
 
-///
-pub fn on_mouse_over(
-  msg: msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
-  fn(scaffold) {
-    scaffold
-    |> scaffold.attach_event(event.on_mouse_over(msg))
-  }
+pub fn on_mouse_up_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_mouse_up(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
 }
 
 ///
-pub fn on_mouse_out(
-  msg: msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
+pub fn on_mouse_enter(msg: msg) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
-    |> scaffold.attach_event(event.on_mouse_out(msg))
+    |> scaffold.attach_attribute(event.on_mouse_enter(msg))
   }
+}
+
+pub fn on_mouse_enter_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_mouse_enter(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
+}
+
+///
+pub fn on_mouse_leave(msg: msg) -> fn(Scaffold(msg)) -> Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> scaffold.attach_attribute(event.on_mouse_leave(msg))
+  }
+}
+
+pub fn on_mouse_leave_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_mouse_leave(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
+}
+
+///
+pub fn on_mouse_over(msg: msg) -> fn(Scaffold(msg)) -> Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> scaffold.attach_attribute(event.on_mouse_over(msg))
+  }
+}
+
+pub fn on_mouse_over_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_mouse_over(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
+}
+
+///
+pub fn on_mouse_out(msg: msg) -> fn(Scaffold(msg)) -> Scaffold(msg) {
+  fn(scaffold) {
+    scaffold
+    |> scaffold.attach_attribute(event.on_mouse_out(msg))
+  }
+}
+
+pub fn on_mouse_out_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_mouse_out(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
 }
 
 // KEYBOARD EVENTS -------------------------------------------------------------
@@ -237,37 +273,61 @@ pub fn on_mouse_out(
 /// Listens for key presses on an element, and dispatches a message with the
 /// current key being pressed.
 ///
-pub fn on_keypress(
-  msg: fn(String) -> msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
+pub fn on_keypress(msg: fn(String) -> msg) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
-    |> scaffold.attach_event(event.on_keypress(msg))
+    |> scaffold.attach_attribute(event.on_keypress(msg))
   }
+}
+
+pub fn on_keypress_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_keypress(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
 }
 
 /// Listens for key down events on an element, and dispatches a message with the
 /// current key being pressed.
 ///
-pub fn on_keydown(
-  msg: fn(String) -> msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
+pub fn on_keydown(msg: fn(String) -> msg) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
-    |> scaffold.attach_event(event.on_keydown(msg))
+    |> scaffold.attach_attribute(event.on_keydown(msg))
   }
+}
+
+pub fn on_keydown_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_keydown(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
 }
 
 /// Listens for key up events on an element, and dispatches a message with the
 /// current key being released.
 ///
-pub fn on_keyup(
-  msg: fn(String) -> msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
+pub fn on_keyup(msg: fn(String) -> msg) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
-    |> scaffold.attach_event(event.on_keyup(msg))
+    |> scaffold.attach_attribute(event.on_keyup(msg))
   }
+}
+
+pub fn on_keyup_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_keyup(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
 }
 
 // FORM EVENTS -----------------------------------------------------------------
@@ -277,13 +337,21 @@ pub fn on_keyup(
 /// and passes it to the given message function. This is commonly used to
 /// implement [controlled inputs](https://github.com/lustre-labs/lustre/blob/main/pages/hints/controlled-vs-uncontrolled-inputs.md).
 ///
-pub fn on_input(
-  msg: fn(String) -> msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
+pub fn on_input(msg: fn(String) -> msg) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
-    |> scaffold.attach_event(event.on_input(msg))
+    |> scaffold.attach_attribute(event.on_input(msg))
   }
+}
+
+pub fn on_input_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_input(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
 }
 
 /// Listens for change events on elements such as `<input>`, `<textarea>` and
@@ -291,13 +359,21 @@ pub fn on_input(
 /// and passes it to the given message function. This is commonly used to
 /// implement [controlled inputs](https://github.com/lustre-labs/lustre/blob/main/pages/hints/controlled-vs-uncontrolled-inputs.md).
 ///
-pub fn on_change(
-  msg: fn(String) -> msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
+pub fn on_change(msg: fn(String) -> msg) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
-    |> scaffold.attach_event(event.on_change(msg))
+    |> scaffold.attach_attribute(event.on_change(msg))
   }
+}
+
+pub fn on_change_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_change(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
 }
 
 /// Listens for change events on `<input type="checkbox">` elements. This handler
@@ -305,13 +381,21 @@ pub fn on_change(
 /// the given message function. This is commonly used to implement
 /// [controlled inputs](https://github.com/lustre-labs/lustre/blob/main/pages/hints/controlled-vs-uncontrolled-inputs.md).
 ///
-pub fn on_check(
-  msg: fn(Bool) -> msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
+pub fn on_check(msg: fn(Bool) -> msg) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
-    |> scaffold.attach_event(event.on_check(msg))
+    |> scaffold.attach_attribute(event.on_check(msg))
   }
+}
+
+pub fn on_check_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_check(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
 }
 
 /// Listens for submit events on a `<form>` element and receives a list of
@@ -328,29 +412,55 @@ pub fn on_check(
 ///
 pub fn on_submit(
   msg: fn(List(#(String, String))) -> msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
+) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
-    |> scaffold.attach_event(event.on_submit(msg))
+    |> scaffold.attach_attribute(event.on_submit(msg))
   }
+}
+
+pub fn on_submit_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_submit(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
 }
 
 // FOCUS EVENTS ----------------------------------------------------------------
 
-pub fn on_focus(
-  msg: msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
+pub fn on_focus(msg: msg) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
-    |> scaffold.attach_event(event.on_focus(msg))
+    |> scaffold.attach_attribute(event.on_focus(msg))
   }
 }
 
-pub fn on_blur(
-  msg: msg,
-) -> fn(Scaffold(msg, last_attr)) -> Scaffold(msg, scaffold.Event) {
+pub fn on_focus_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_focus(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
+}
+
+pub fn on_blur(msg: msg) -> fn(Scaffold(msg)) -> Scaffold(msg) {
   fn(scaffold) {
     scaffold
-    |> scaffold.attach_event(event.on_blur(msg))
+    |> scaffold.attach_attribute(event.on_blur(msg))
   }
+}
+
+pub fn on_blur_with(
+  scaffold: Scaffold(msg),
+  msg,
+  modifiers: List(fn(Attribute(msg)) -> Attribute(msg)),
+) -> Scaffold(msg) {
+  scaffold
+  |> on_blur(msg)
+  |> scaffold.modify_latest_attr_with_many(modifiers)
 }

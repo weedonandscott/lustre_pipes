@@ -7,41 +7,36 @@ import lustre_pipes/internal/scaffold
 pub type Element(msg) =
   element.Element(msg)
 
-pub type Scaffold(msg, last_attr) =
-  scaffold.Scaffold(msg, last_attr)
+pub type Scaffold(msg) =
+  scaffold.Scaffold(msg)
 
 // CUSTOM FUNCTIONS ------------------------------------------------------------
 
-pub fn element(tag: String) -> Scaffold(msg, scaffold.NoAttrs) {
+pub fn element(tag: String) -> Scaffold(msg) {
   scaffold.regular(tag)
 }
 
-pub fn namespaced(
-  namespace: String,
-  tag: String,
-) -> Scaffold(msg, scaffold.NoAttrs) {
+pub fn namespaced(namespace: String, tag: String) -> Scaffold(msg) {
   scaffold.namespaced(namespace:, tag:)
 }
 
-pub fn empty(scaffold: Scaffold(msg, last_attr)) -> Element(msg) {
+pub fn empty(scaffold: Scaffold(msg)) -> Element(msg) {
   scaffold |> scaffold.to_element([])
 }
 
-pub fn text_content(
-  content: String,
-) -> fn(Scaffold(msg, last_attr)) -> Element(msg) {
+pub fn text_content(content: String) -> fn(Scaffold(msg)) -> Element(msg) {
   fn(scaffold) { scaffold |> scaffold.to_element([element.text(content)]) }
 }
 
 pub fn children(
   children: List(Element(msg)),
-) -> fn(Scaffold(msg, last_attr)) -> Element(msg) {
+) -> fn(Scaffold(msg)) -> Element(msg) {
   fn(scaffold) { scaffold |> scaffold.to_element(children) }
 }
 
 pub fn keyed(
   pairs: List(#(String, Element(msg))),
-) -> fn(Scaffold(msg, last_attr)) -> Element(msg) {
+) -> fn(Scaffold(msg)) -> Element(msg) {
   fn(scaffold) { scaffold |> scaffold.to_keyed_element(pairs) }
 }
 

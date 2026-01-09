@@ -22,7 +22,7 @@ pub type Unknown
 // Scaffold
 
 @internal
-pub opaque type Scaffold(msg, last_attr) {
+pub opaque type Scaffold(msg) {
   Regular(tag: String, attrs: List(attribute.Attribute(msg)))
   Namespaced(
     tag: String,
@@ -32,34 +32,35 @@ pub opaque type Scaffold(msg, last_attr) {
 }
 
 @internal
-pub type ChildlessScaffold(msg, last_attr) =
-  Scaffold(msg, last_attr)
+pub type ChildlessScaffold(msg) =
+  Scaffold(msg)
 
 @internal
-pub type TextContentScaffold(msg, last_attr) =
-  Scaffold(msg, last_attr)
+pub type TextContentScaffold(msg) =
+  Scaffold(msg)
 
 // Creation
 
 @internal
-pub fn regular(tag: String) -> Scaffold(msg, NoAttrs) {
+pub fn regular(tag: String) -> Scaffold(msg) {
   Regular(tag:, attrs: [])
 }
 
+// pub fn from(
+//   builder_fn: fn(List(attribute.Attribute), List(element.Element)) ->
+//     element.Element,
+// ) -> Scaffold(msg) {
+//   Regular(tag:, attrs: [])
+// }
+
 @internal
-pub fn namespaced(
-  namespace namespace: String,
-  tag tag: String,
-) -> Scaffold(msg, NoAttrs) {
+pub fn namespaced(namespace namespace: String, tag tag: String) -> Scaffold(msg) {
   Namespaced(namespace:, tag:, attrs: [])
 }
 
 // Graduation
 
-pub fn to_element(
-  scaffold: Scaffold(msg, last_attr),
-  children: List(element.Element(msg)),
-) {
+pub fn to_element(scaffold: Scaffold(msg), children: List(element.Element(msg))) {
   case scaffold {
     Namespaced(namespace:, tag:, attrs:) ->
       element.namespaced(namespace, tag, attrs, children)
@@ -68,7 +69,7 @@ pub fn to_element(
 }
 
 pub fn to_keyed_element(
-  scaffold: Scaffold(msg, last_attr),
+  scaffold: Scaffold(msg),
   pairs: List(#(String, element.Element(msg))),
 ) {
   case scaffold {
@@ -81,49 +82,10 @@ pub fn to_keyed_element(
 // Transformation
 
 @internal
-pub fn attach_event(
-  scaffold: Scaffold(msg, last_attr),
-  event: attribute.Attribute(msg),
-) -> Scaffold(msg, Event) {
-  case scaffold {
-    Regular(attrs:, ..) as regular ->
-      Regular(..regular, attrs: [event, ..attrs])
-    Namespaced(attrs:, ..) as namespaced ->
-      Namespaced(..namespaced, attrs: [event, ..attrs])
-  }
-}
-
-@internal
 pub fn attach_attribute(
-  scaffold: Scaffold(msg, last_attr),
+  scaffold: Scaffold(msg),
   event: attribute.Attribute(msg),
-) -> Scaffold(msg, AttributeOrProperty) {
-  case scaffold {
-    Regular(attrs:, ..) as regular ->
-      Regular(..regular, attrs: [event, ..attrs])
-    Namespaced(attrs:, ..) as namespaced ->
-      Namespaced(..namespaced, attrs: [event, ..attrs])
-  }
-}
-
-@internal
-pub fn attach_property(
-  scaffold: Scaffold(msg, last_attr),
-  event: attribute.Attribute(msg),
-) -> Scaffold(msg, AttributeOrProperty) {
-  case scaffold {
-    Regular(attrs:, ..) as regular ->
-      Regular(..regular, attrs: [event, ..attrs])
-    Namespaced(attrs:, ..) as namespaced ->
-      Namespaced(..namespaced, attrs: [event, ..attrs])
-  }
-}
-
-@internal
-pub fn attach_unknown(
-  scaffold: Scaffold(msg, last_attr),
-  event: attribute.Attribute(msg),
-) -> Scaffold(msg, Unknown) {
+) -> Scaffold(msg) {
   case scaffold {
     Regular(attrs:, ..) as regular ->
       Regular(..regular, attrs: [event, ..attrs])
@@ -134,9 +96,9 @@ pub fn attach_unknown(
 
 @internal
 pub fn modify_latest_attr(
-  scaffold: Scaffold(msg, last_attr),
+  scaffold: Scaffold(msg),
   modifier: fn(attribute.Attribute(msg)) -> attribute.Attribute(msg),
-) -> Scaffold(msg, last_attr) {
+) -> Scaffold(msg) {
   case scaffold {
     Regular(attrs: [latest_attr, ..] as attrs, ..) as regular ->
       Regular(..regular, attrs: [modifier(latest_attr), ..attrs])
@@ -148,9 +110,9 @@ pub fn modify_latest_attr(
 
 @internal
 pub fn modify_latest_attr_with_many(
-  scaffold: Scaffold(msg, last_attr),
+  scaffold: Scaffold(msg),
   modifiers: List(fn(attribute.Attribute(msg)) -> attribute.Attribute(msg)),
-) -> Scaffold(msg, last_attr) {
+) -> Scaffold(msg) {
   case scaffold {
     Regular(attrs: [latest_attr, ..] as attrs, ..) as regular ->
       Regular(..regular, attrs: [
