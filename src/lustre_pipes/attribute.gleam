@@ -1,3 +1,4 @@
+import gleam/list
 import lustre/attribute
 import lustre_pipes/internal/scaffold.{type Scaffold}
 
@@ -61,7 +62,7 @@ pub fn none(scaffold: Scaffold(msg)) -> Scaffold(msg) {
 }
 
 /// If for some reason you already have an `Attribute` type, you can use this
-/// function to add it to the element
+/// function to add it to the element.
 ///
 pub fn add(
   scaffold: Scaffold(msg),
@@ -69,6 +70,19 @@ pub fn add(
 ) -> Scaffold(msg) {
   scaffold
   |> scaffold.attach_attribute(attribute)
+}
+
+/// If for some reason you already have many `Attribute` type, you can use this
+/// function to add them to the element.
+///
+pub fn add_many(
+  scaffold: Scaffold(msg),
+  attributes: List(attribute.Attribute(msg)),
+) -> Scaffold(msg) {
+  list.fold(attributes, scaffold, fn(scaffold, attribute) {
+    scaffold
+    |> scaffold.attach_attribute(attribute)
+  })
 }
 
 fn add_attribute(scaffold: Scaffold(msg), attribute: Attribute(msg)) {
